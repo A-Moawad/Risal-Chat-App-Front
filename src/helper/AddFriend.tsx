@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa";
 
 function AddFriend() {
   return (
-    <div className="add-friend w[40px] h-[40px]">
+    <div className=" w-7 h-7 cursor-pointer bg-sky-600 flex justify-center items-center">
       <FaPlus className="text-white text-sm "/>
     </div>
   );

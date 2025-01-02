@@ -24,7 +24,7 @@ export default defineSchema({
 
   users: defineTable({
     name: v.string(),
-    email: v.string(),
+    email: v.optional(v.string()),
     avatarUrl: v.optional(v.string()),
     lastSeenAt: v.optional(v.string()), // Optional timestamp of when the user last saw the app
     conversations: v.optional(v.array(v.id("conversations"))), // Optional list of conversation IDs

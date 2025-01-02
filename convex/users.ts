@@ -1,5 +1,6 @@
 import { internalMutation, query, QueryCtx } from "./_generated/server";
 import { UserJSON } from "@clerk/backend";
+import { Email } from "@clerk/backend/dist/api";
 import { v, Validator } from "convex/values";
 
 export const current = query({
@@ -15,7 +16,9 @@ export const upsertFromClerk = internalMutation({
     const userAttributes = {
       name: `${data.first_name} ${data.last_name}`,
       externalId: data.id,
-    };
+      email: data.email_addresses[0].email_address,
+    }
+
 
     const user = await userByExternalId(ctx, data.id);
     if (user === null) {
@@ -35,7 +38,7 @@ export const deleteFromClerk = internalMutation({
       await ctx.db.delete(user._id);
     } else {
       console.warn(
-        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`,
+        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`
       );
     }
   },
