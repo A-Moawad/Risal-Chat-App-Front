@@ -6,7 +6,7 @@ const HomePage = () => {
   const [addFriendButtonClicked, setAddFriendButtonClicked] =
     useState<boolean>(false);
   return (
-    <div className=" flex  justify-between h-[100vh]">
+    <div className="flex">
       <ChatsSection
         addFriendButtonClicked={addFriendButtonClicked}
         setAddFriendButtonClicked={setAddFriendButtonClicked}

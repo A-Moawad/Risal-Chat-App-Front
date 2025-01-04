@@ -28,7 +28,7 @@
 
 body {
 
-  height: 100vh;
+  /* height: 100vh; */
   font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", helvetica, sans-serif;
   background-color: #eee;
   background-image: url("/src//assets/images//background.jpg"); /* Replace 'chat-background.jpg' with your actual file name */
