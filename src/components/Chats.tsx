@@ -15,7 +15,7 @@ const Chats = ({
   setAddFriendButtonClicked,
 }: ChatsProps) => {
   return (
-    <div className="bg-white w-full md:w-[50%] lg:w-[30%] h-[100vh] px-3 py-2 flex flex-col gap-4">
+    <div className="bg-white w-full sm:w-[50%] lg:w-[30%] h-[100vh] px-3 py-2 flex flex-col gap-4">
       {/* Header */}
       <section className="flex justify-between items-center pb-2 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-800">Chats</h1>

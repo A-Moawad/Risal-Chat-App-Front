@@ -5,6 +5,8 @@ import { MdKeyboardVoice } from "react-icons/md";
 import { IoMdSend } from "react-icons/io";
 import { Input } from "./ui/input";
 import { useState } from "react";
+import { IoIosAdd } from "react-icons/io";
+
 
 export default function ChatLayout() {
   const [message, setMessage] = useState<string>("");
@@ -20,7 +22,7 @@ export default function ChatLayout() {
   };
 
   return (
-    <section className="hidden h-[100vh] md:flex md:flex-col md:w-[50%] lg:w-[70%] bg-yellow-50">
+    <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow-50">
       {/* Header */}
       <div className="flex bg-gray-100 px-3 py-3 items-center justify-between">
         <div className="flex gap-3 items-center">
@@ -55,13 +57,14 @@ export default function ChatLayout() {
 
       {/* Input Messages */}
       <div className="bg-gray-100 h-14 flex items-center px-2">
+        <IoIosAdd className="text-3xl text-gray-500 cursor-pointer hover:text-gray-600 mr-2"
+        arial-label="add medial"/>
         <Input
           type="text"
           placeholder="Type a message"
           className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
           onChange={handleChange}
           value={message}
-          onKeyPress={(e) => e.key === "Enter" && handleSend()}
         />
         {message.trim() ? (
           <IoMdSend
