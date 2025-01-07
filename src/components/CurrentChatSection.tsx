@@ -6,9 +6,11 @@ import { IoMdSend } from "react-icons/io";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { IoIosAdd } from "react-icons/io";
+import { useUser } from "@clerk/clerk-react";
 
 
 export default function ChatLayout() {
+  const { user } = useUser();
   const [message, setMessage] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +33,7 @@ export default function ChatLayout() {
             alt="current messager"
             className="w-8 h-8 cursor-pointer"
           />
-          <h2 className="font-bold">John Doe</h2>
+          <h2 className="font-bold">{user?.fullName}</h2>
         </div>
         <div className="flex gap-2">
           <FaSearch className="text-xl cursor-pointer hover:text-gray-600" />

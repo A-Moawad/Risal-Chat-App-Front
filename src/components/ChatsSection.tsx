@@ -1,8 +1,4 @@
-import AddFriend from "@/helper/AddFriend";
 import React, { useState } from "react";
-import { IoMdMore } from "react-icons/io";
-import SearchBar from "@/helper/searchBar";
-import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
 import Chats from "./Chats";
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import AddFriendForm from "./AddFriendForm";
 
 type AddFriendForm = {
   addFriendButtonClicked: boolean;

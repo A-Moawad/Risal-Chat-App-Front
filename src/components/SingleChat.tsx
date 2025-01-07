@@ -9,7 +9,7 @@ type ChatType = {
 }
 function SingleChat({ name, message, time, unread }: ChatType) {
   return (
-    <div className="flex items-center gap-4 p-4 border-b border-gray-200 cursor-pointer">
+    <div className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200">
       <img
         src={avatar}
         alt="Profile"
