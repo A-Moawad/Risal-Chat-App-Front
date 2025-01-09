@@ -3,11 +3,24 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
+import { useNavigate } from "react-router-dom";
+
 interface IFormInput {
   email: string;
 }
 
-function AddFriendForm() {
+type Props = {
+  addFriendButtonClicked: boolean;
+  setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+function AddFriendForm({addFriendButtonClicked,
+  setAddFriendButtonClicked }: Props) {
+  
+  const handleArrowLeftClick = () => {
+    setAddFriendButtonClicked(false);
+  }
+
   const addFriend = useMutation(api.users.addFriend); 
 
   const friendList = useQuery(api.users.getFriendList);
@@ -32,7 +45,7 @@ function AddFriendForm() {
     <section className="bg-white w-full md:w-[50%] lg:w-[30%] h-[100vh] px-6 py-8 flex flex-col gap-6 shadow-lg rounded-lg">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <GoArrowLeft className="text-xl text-gray-600 cursor-pointer" />
+        <GoArrowLeft className="text-xl text-gray-600 cursor-pointer " onClick={handleArrowLeftClick}/>
         <h2 className="text-xl font-bold">New Chat</h2>
       </div>
 

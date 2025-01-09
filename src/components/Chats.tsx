@@ -42,7 +42,10 @@ const Chats = ({
       {/* Conditional Rendering for Add Friend */}
       {addFriendButtonClicked && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <AddFriendForm />
+          <AddFriendForm
+            addFriendButtonClicked={addFriendButtonClicked}
+            setAddFriendButtonClicked={setAddFriendButtonClicked}
+          />
         </div>
       )}
     </div>
