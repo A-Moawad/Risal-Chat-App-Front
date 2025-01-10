@@ -5,19 +5,27 @@ import SearchBar from "@/helper/searchBar";
 import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
 
+type Chat = {
+  userId: string;
+  friendId: string;
+};
+
 type ChatsProps = {
   addFriendButtonClicked: boolean;
   setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  currentChat: Chat | null;
+  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 };
-
 const Chats = ({
   addFriendButtonClicked,
   setAddFriendButtonClicked,
+  currentChat,
+  setCurrentChat,
 }: ChatsProps) => {
   return (
-    <div className="bg-white w-full sm:w-[50%] lg:w-[30%] h-[100vh] px-3 py-2 flex flex-col gap-4">
+    <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4">
       {/* Header */}
-      <section className="flex justify-between items-center pb-2 border-b border-gray-200">
+      <section className="flex justify-between items-center p-3 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-800">Chats</h1>
         <div className="flex items-center gap-2">
           <AddFriend
@@ -36,7 +44,7 @@ const Chats = ({
 
       {/* Chats Section */}
       <div className="flex-1 overflow-y-auto">
-        <AllChats />
+        <AllChats currentChat={currentChat} setCurrentChat={setCurrentChat} />
       </div>
 
       {/* Conditional Rendering for Add Friend */}

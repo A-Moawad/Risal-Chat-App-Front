@@ -39,6 +39,7 @@ export default defineSchema({
   })
     .index("byExternalId", ["externalId"])
     .index("byEmail", ["email"]), // Index for external ID lookups
+    
   messageReads: defineTable({
     messageId: v.id("messages"), // ID of the message being read
     userId: v.id("users"), // ID of the user who read the message

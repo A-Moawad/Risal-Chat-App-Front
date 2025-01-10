@@ -3,7 +3,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
-import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   email: string;
@@ -42,7 +41,7 @@ function AddFriendForm({addFriendButtonClicked,
   };
 
   return (
-    <section className="bg-white w-full md:w-[50%] lg:w-[30%] h-[100vh] px-6 py-8 flex flex-col gap-6 shadow-lg rounded-lg">
+    <section className="bg-white w-full sm:w-[50%]  lg:w-[40%] h-[100vh] px-6 py-8 flex flex-col gap-6 shadow-lg rounded-lg">
       {/* Header */}
       <div className="flex items-center gap-4">
         <GoArrowLeft className="text-xl text-gray-600 cursor-pointer " onClick={handleArrowLeftClick}/>

@@ -2,23 +2,40 @@ import React, { useState } from "react";
 import AddFriendForm from "@/helper/AddFriendForm";
 import Chats from "./Chats";
 
+type Chat = {
+  userId: string;
+  friendId: string;
+};
+
 type ChatsProps = {
   addFriendButtonClicked: boolean;
   setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
-};function ChatsSection({addFriendButtonClicked, setAddFriendButtonClicked}: ChatsProps) {
-
+  currentChat: Chat | null;
+  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
+};
+function ChatsSection({
+  addFriendButtonClicked,
+  setAddFriendButtonClicked,
+  currentChat,
+  setCurrentChat,
+}: ChatsProps) {
   return (
     <>
       {addFriendButtonClicked ? (
-        <AddFriendForm />
+        <AddFriendForm
+          addFriendButtonClicked={addFriendButtonClicked}
+          setAddFriendButtonClicked={setAddFriendButtonClicked}
+        />
       ) : (
         <Chats
           addFriendButtonClicked={addFriendButtonClicked}
           setAddFriendButtonClicked={setAddFriendButtonClicked}
+          currentChat={currentChat}
+          setCurrentChat={setCurrentChat}
         />
       )}
     </>
   );
 }
 
-export default Chats;
+export default ChatsSection;

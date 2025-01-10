@@ -23,6 +23,8 @@ export const upsertFromClerk = internalMutation({
       name: `${data.first_name} ${data.last_name}`,
       externalId: data.id,
       email: data.email_addresses[0].email_address,
+      conversations: [],
+      friends: [], 
       createdAt: now,
       updatedAt: now,
     };

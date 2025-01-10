@@ -1,22 +1,31 @@
 import React from "react";
-import  avatar  from '../assets/images/avatar.png';
+import avatar from "../assets/images/avatar.png";
 
 type ChatType = {
-  name: string,
-  message: string,
-  time: string,
-  unread: number,
-}
+  name: string;
+  message: string;
+  time: string;
+  unread: number;
+};
+
 function SingleChat({ name, message, time, unread }: ChatType) {
+  const handleClick = () => {
+    console.log(`Clicked on chat with: ${name}`);
+    // Add additional logic for handling click events, e.g., navigating to a chat or updating the UI.
+  };
+
   return (
-    <div className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200">
+    <div
+      className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200"
+      onClick={handleClick} // Attach the click handler here
+    >
       <img
         src={avatar}
         alt="Profile"
         className="w-12 h-12 rounded-full object-cover"
       />
       <div className="flex-1">
-        <h2 className="text-lg font-bold">{name}</h2>
+        <h2 className="md:text-lg font-bold">{name}</h2>
         <p className="text-sm text-gray-600 truncate">{message}</p>
       </div>
       <div className="text-right">

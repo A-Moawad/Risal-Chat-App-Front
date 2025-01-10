@@ -8,8 +8,16 @@ import { useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { useUser } from "@clerk/clerk-react";
 
+type Chat = {
+  userId: string;
+  friendId: string;
+};
 
-export default function ChatLayout() {
+type CurrentChatSectionProps = {
+  currentChat: Chat | null;
+};
+
+export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
 
@@ -26,14 +34,16 @@ export default function ChatLayout() {
   return (
     <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow-50">
       {/* Header */}
-      <div className="flex bg-gray-100 px-3 py-3 items-center justify-between">
+      <div className="flex bg-gray-100 p-3 items-center justify-between">
         <div className="flex gap-3 items-center">
           <img
             src={avatar}
-            alt="current messager"
+            alt="Current Chat Avatar"
             className="w-8 h-8 cursor-pointer"
           />
-          <h2 className="font-bold">{user?.fullName}</h2>
+          <h2 className="font-bold">
+            {user?.fullName || "no user"}
+          </h2>
         </div>
         <div className="flex gap-2">
           <FaSearch className="text-xl cursor-pointer hover:text-gray-600" />
@@ -46,21 +56,26 @@ export default function ChatLayout() {
 
       {/* Current Chat */}
       <div className="flex-1 bg-white overflow-y-auto p-4">
-        {/* Example messages */}
-        <div className="text-left">
-          <p className="bg-gray-200 p-2 rounded-lg mb-2 w-fit hover:bg-gray-300">
-            Hi there!
-          </p>
-          <p className="bg-blue-400 p-2 rounded-lg mb-2 w-fit ml-auto hover:bg-blue-500">
-            Hello! How can I help?
-          </p>
-        </div>
+        {currentChat ? (
+          <div className="text-left">
+            <p className="bg-gray-200 p-2 rounded-lg mb-2 w-fit hover:bg-gray-300">
+              Hi there!
+            </p>
+            <p className="bg-blue-400 p-2 rounded-lg mb-2 w-fit ml-auto hover:bg-blue-500">
+              Hello! How can I help?
+            </p>
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center mt-4">No messages yet</p>
+        )}
       </div>
 
       {/* Input Messages */}
       <div className="bg-gray-100 h-14 flex items-center px-2">
-        <IoIosAdd className="text-3xl text-gray-500 cursor-pointer hover:text-gray-600 mr-2"
-        arial-label="add medial"/>
+        <IoIosAdd
+          className="text-3xl text-gray-500 cursor-pointer hover:text-gray-600 mr-2"
+          aria-label="Add Media"
+        />
         <Input
           type="text"
           placeholder="Type a message"
