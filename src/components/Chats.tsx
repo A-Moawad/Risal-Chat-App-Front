@@ -23,7 +23,7 @@ const Chats = ({
   setCurrentChat,
 }: ChatsProps) => {
   return (
-    <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4">
+    <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4 px-3">
       {/* Header */}
       <section className="flex justify-between items-center p-3 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-800">Chats</h1>

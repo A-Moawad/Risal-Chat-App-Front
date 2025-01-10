@@ -3,10 +3,12 @@ import SingleChat from "./SingleChat";
 import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
+
 type Chat = {
   userId: string;
   friendId: string;
 };
+
 type ChatsProps = {
   currentChat: Chat | null;
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;

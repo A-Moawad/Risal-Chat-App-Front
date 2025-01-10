@@ -125,7 +125,7 @@ export const getFriendList = query({
     const friends = await Promise.all(
       currentUser.friends.map(async (friendId) => {
         const friend = await ctx.db.get(friendId);
-        return friend || null; // Handle missing friend gracefully
+        return friend || null;
       })
     );
 
