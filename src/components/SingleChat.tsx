@@ -1,27 +1,55 @@
 import React from "react";
 import avatar from "../assets/images/avatar.png";
-
+import { useUser } from "@clerk/clerk-react";
+import { Id } from "convex/_generated/dataModel";
 type ChatType = {
   name: string;
   message: string;
   time: string;
   unread: number;
+  friendId: Id<"users">; 
 };
 
-function SingleChat({ name, message, time, unread }: ChatType) {
+type Chat = {
+  userId: Id<"users">; // Use Id<"users">
+  friendId: Id<"users">; // Use Id<"users">
+};
+
+type ChatsProps = {
+  currentChat: Chat | null;
+  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
+};
+
+function SingleChat({
+  name,
+  message,
+  time,
+  unread,
+  friendId,
+  currentChat,
+  setCurrentChat,
+}: ChatType & ChatsProps) {
+  const { user } = useUser();
+
   const handleClick = () => {
-    console.log(`Clicked on chat with: ${name}`);
-    // Add additional logic for handling click events, e.g., navigating to a chat or updating the UI.
+    if (!user?.id) {
+      console.error("User is not authenticated.");
+      return;
+    }
+    setCurrentChat({ userId: user.id as Id<"users">, friendId });
+    console.log(`Switched to chat with: ${name}`);
   };
 
   return (
     <div
       className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200"
-      onClick={handleClick} // Attach the click handler here
+      onClick={handleClick}
+      role="button"
+      aria-label={`Open chat with ${name}`}
     >
       <img
         src={avatar}
-        alt="Profile"
+        alt="Profile avatar"
         className="w-12 h-12 rounded-full object-cover"
       />
       <div className="flex-1">

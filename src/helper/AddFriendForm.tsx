@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
+import { current } from "convex/users";
 
 interface IFormInput {
   email: string;
@@ -91,10 +92,11 @@ function AddFriendForm({addFriendButtonClicked,
             {friendList?.map((friend) => (
               <li key={friend._id}>
                 <SingleChat
-                  name={friend.name}
+                  name={friend?.name}
                   message="hi"
                   time="12:00 PM"
                   unread={0}
+                  
                 />
               </li>
             ))}

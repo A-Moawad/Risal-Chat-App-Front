@@ -134,3 +134,10 @@ export const getFriendList = query({
   },
 });
 
+export const getFriend = query({
+  args: { friendId: v.id("users") },
+  handler: async (ctx, { friendId }) => {
+    const friend = await ctx.db.get(friendId);
+    return friend || null; 
+  },
+});

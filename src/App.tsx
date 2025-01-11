@@ -9,23 +9,23 @@ export default function App() {
 
   return (
     <main className="w-full h-full px-4">
-      {/* {isLoading ? (
+      {isLoading ? (
         <div>Loading...</div>
       ) : isAuthenticated ? (
         <>
-            <HomePage />
-            
-          <SignOutButton className="bg-sky-600 py-1 text-center text-white rounded-md mx-auto" />
+          <HomePage />
+          <Button className="bg-sky-600 py-1 text-center text-white rounded-md mx-auto">
+            <SignOutButton />
+          </Button>
         </>
       ) : (
         <LoginPage />
-      )} */}
-      <LoginPage />
+      )}
+      {/* <LoginPage />
       <HomePage />
       <Button className="bg-sky-600 py-1 text-center text-white rounded-md mx-auto">
         <SignOutButton />
-      </Button>
+      </Button> */}
     </main>
-    
   );
 }

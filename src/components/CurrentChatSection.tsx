@@ -1,18 +1,19 @@
 import avatar from "../assets/images/avatar.png";
 import { FaSearch } from "react-icons/fa";
-import { IoMdMore } from "react-icons/io";
+import { IoMdMore, IoMdSend } from "react-icons/io";
 import { MdKeyboardVoice } from "react-icons/md";
-import { IoMdSend } from "react-icons/io";
+import { IoIosAdd } from "react-icons/io";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { IoIosAdd } from "react-icons/io";
 import { useUser } from "@clerk/clerk-react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api"
+import { Id } from "convex/_generated/dataModel";
 
 type Chat = {
-  userId: string;
-  friendId: string;
+  userId: Id<"users">; // Use Id<"users">
+  friendId: Id<"users">; // Use Id<"users">
 };
-
 type CurrentChatSectionProps = {
   currentChat: Chat | null;
 };
@@ -20,6 +21,15 @@ type CurrentChatSectionProps = {
 export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
+
+  // Query to get current friend details
+  const currentFriend = useQuery(
+    api.users.getFriend,
+    currentChat?.friendId
+      ? { friendId: currentChat.friendId as Id<"users"> }
+      : "skip"
+  );
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
@@ -35,6 +45,27 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
     <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow- sm:border sm:border-l-gray-200">
       {currentChat ? (
         <>
+          {/* Header */}
+          <div className="flex bg-gray-100 p-3 items-center justify-between">
+            <div className="flex gap-3 items-center">
+              <img
+                src={avatar}
+                alt="Current Chat Avatar"
+                className="w-8 h-8 cursor-pointer rounded-full"
+              />
+              <h2 className="font-bold">
+                {currentFriend?.name || "Loading..."}
+              </h2>
+            </div>
+            <div className="flex gap-2">
+              <FaSearch className="text-xl cursor-pointer hover:text-gray-600" />
+              <IoMdMore
+                className="cursor-pointer text-2xl hover:text-gray-600"
+                aria-label="More Options"
+              />
+            </div>
+          </div>
+
           {/* Current Chat */}
           <div className="flex-1 bg-white overflow-y-auto p-4">
             <div className="text-left">

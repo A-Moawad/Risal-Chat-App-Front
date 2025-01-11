@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import AddFriendForm from "@/helper/AddFriendForm";
 import Chats from "./Chats";
+import { Id } from "convex/_generated/dataModel";
 
 type Chat = {
-  userId: string;
-  friendId: string;
+  userId: Id<"users">; // Use Id<"users">
+  friendId: Id<"users">; // Use Id<"users">
 };
+
 
 type ChatsProps = {
   addFriendButtonClicked: boolean;

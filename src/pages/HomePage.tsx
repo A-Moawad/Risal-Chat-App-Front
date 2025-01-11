@@ -1,10 +1,11 @@
 import ChatsSection from "@/components/ChatsSection";
 import CurrentChatSection from "@/components/CurrentChatSection";
 import { useState } from "react";
+import { Id } from "../../convex/_generated/dataModel";
 
 type Chat = {
-  userId: string;
-  friendId: string;
+  userId: Id<"users">; // Use Id<"users">
+  friendId: Id<"users">; // Use Id<"users">
 };
 
 const HomePage = () => {
@@ -14,7 +15,7 @@ const HomePage = () => {
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
 
   return (
-    <div className="flex ">
+    <div className="flex h-screen">
       <ChatsSection
         addFriendButtonClicked={addFriendButtonClicked}
         setAddFriendButtonClicked={setAddFriendButtonClicked}

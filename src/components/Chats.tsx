@@ -4,10 +4,11 @@ import { IoMdMore } from "react-icons/io";
 import SearchBar from "@/helper/searchBar";
 import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
+import { Id } from "convex/_generated/dataModel";
 
 type Chat = {
-  userId: string;
-  friendId: string;
+  userId: Id<"users">; // Use Id<"users">
+  friendId: Id<"users">; // Use Id<"users">
 };
 
 type ChatsProps = {
