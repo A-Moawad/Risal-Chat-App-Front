@@ -3,7 +3,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
-import { current } from "convex/users";
 
 interface IFormInput {
   email: string;
@@ -25,6 +24,7 @@ function AddFriendForm({addFriendButtonClicked,
 
   const friendList = useQuery(api.users.getFriendList);
   console.log(friendList);
+  
   const {
     register,
     handleSubmit,

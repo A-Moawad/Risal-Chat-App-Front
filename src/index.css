@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer utilities {
   /* .add-friend {
     background-color: #03A9F1;
@@ -14,10 +13,7 @@
     justify-content: center;
     border-radius: 10%;
   } */
-  
 }
-
-
 
 * {
   margin: 0;
@@ -27,11 +23,11 @@
 }
 
 body {
-
   /* height: 100vh; */
-  font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", helvetica, sans-serif;
+  font-family: system-ui, "Segoe UI", Roboto, "Helvetica Neue", helvetica,
+    sans-serif;
   background-color: #eee;
-  background-image: url("/src//assets/images//background.jpg"); /* Replace 'chat-background.jpg' with your actual file name */
+  background-image: url("/src/assets/images/background.jpg");
   background-size: cover; /* Ensures the image covers the entire background */
   background-repeat: no-repeat; /* Prevents the image from repeating */
   background-position: center; /* Centers the image */

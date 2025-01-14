@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
   messages: defineTable({
-    messageId: v.string(), // Unique identifier (UUID for better uniqueness)
+    // messageId: v.string(), // Unique identifier (UUID for better uniqueness)
     conversationId: v.id("conversations"), // Associated conversation ID
     senderId: v.id("users"), // User ID of the sender
     content: v.string(), // The actual message text
@@ -18,7 +18,7 @@ export default defineSchema({
     .index("byConversationId", ["conversationId", "createdAt"]), // Pagination-friendly index
 
   conversations: defineTable({
-    conversationId: v.string(), // Unique identifier
+    // conversationId: v.string(), // Unique identifier
     participants: v.array(v.id("users")), // Array of user IDs involved in the conversation
     lastMessage: v.optional(v.id("messages")), // Optional ID of the last message in the conversation
     createdAt: v.string(), // Timestamp when the conversation was created

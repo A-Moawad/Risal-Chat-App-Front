@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import avatar from "../assets/images/avatar.png";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "convex/_generated/dataModel";
+import { api } from "../../convex/_generated/api";
+import { useQuery } from "convex/react";
+
 type ChatType = {
   name: string;
   message: string;
   time: string;
   unread: number;
-  friendId: Id<"users">; 
+  friendId: Id<"users">;
 };
 
 type Chat = {
-  userId: Id<"users">; // Use Id<"users">
-  friendId: Id<"users">; // Use Id<"users">
+  userId: Id<"users">;
+  friendId: Id<"users">;
 };
 
 type ChatsProps = {
@@ -30,13 +33,25 @@ function SingleChat({
   setCurrentChat,
 }: ChatType & ChatsProps) {
   const { user } = useUser();
+  const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
+
+  const userConvexIdQuery = useQuery(
+    api.users.getIdByExternalId,
+    user?.id ? { externalId: user.id } : "skip"
+  );
+
+  useEffect(() => {
+    if (userConvexIdQuery) {
+      setUserConvexId(userConvexIdQuery);
+    }
+  }, [userConvexIdQuery]);
 
   const handleClick = () => {
-    if (!user?.id) {
-      console.error("User is not authenticated.");
+    if (!userConvexId) {
+      console.error("Convex ID is not yet available.");
       return;
     }
-    setCurrentChat({ userId: user.id as Id<"users">, friendId });
+    setCurrentChat({ userId: userConvexId, friendId });
     console.log(`Switched to chat with: ${name}`);
   };
 

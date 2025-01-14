@@ -24,7 +24,7 @@ export const upsertFromClerk = internalMutation({
       externalId: data.id,
       email: data.email_addresses[0].email_address,
       conversations: [],
-      friends: [], 
+      friends: [],
       createdAt: now,
       updatedAt: now,
     };
@@ -74,9 +74,25 @@ async function userByExternalId(ctx: QueryCtx, externalId: string) {
     .unique();
 }
 
+export const getIdByExternalId = query(
+  async ({ db }, { externalId }: { externalId: string }) => {
+    // Query the database to find the user by externalId
+    const user = await db
+      .query("users")
+      .filter((q) => q.eq(q.field("externalId"), externalId))
+      .first();
+
+    if (!user) {
+      throw new Error(`User with externalId "${externalId}" not found.`);
+    }
+
+    return user._id; // Return the user's Convex ID
+  }
+);
+
 // add friend
 export const addFriend = mutation({
-  args: { friendEmail: v.string() }, // Accept the friend's email
+  args: { friendEmail: v.string() },
   async handler(ctx, { friendEmail }) {
     // Get the current user
     const currentUser = await getCurrentUserOrThrow(ctx);
@@ -134,10 +150,11 @@ export const getFriendList = query({
   },
 });
 
+// get friend by id
 export const getFriend = query({
   args: { friendId: v.id("users") },
   handler: async (ctx, { friendId }) => {
     const friend = await ctx.db.get(friendId);
-    return friend || null; 
+    return friend || null;
   },
 });
