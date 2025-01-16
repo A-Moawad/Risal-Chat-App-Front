@@ -4,12 +4,12 @@ import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "convex/_generated/dataModel";
+import { SkeletonDemo } from "@/helper/ChatSkeleton";
 
 type Chat = {
   userId: Id<"users">; // Use Id<"users">
   friendId: Id<"users">; // Use Id<"users">
 };
-
 
 type ChatsProps = {
   currentChat: Chat | null;
@@ -20,7 +20,16 @@ function AllChats({ currentChat, setCurrentChat }: ChatsProps) {
   const { user } = useUser();
   const friendList = useQuery(api.users.getFriendList);
 
-  if (!friendList) return <p>Loading...</p>;
+  if (!friendList)
+    return (
+      <>
+        <SkeletonDemo />
+        <SkeletonDemo />
+        <SkeletonDemo />
+        <SkeletonDemo />
+        <SkeletonDemo />
+      </>
+    );
   if (friendList.length === 0) return <p>No friends yet</p>;
 
   return (
