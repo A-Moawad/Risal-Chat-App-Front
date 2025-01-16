@@ -23,6 +23,8 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
   const [message, setMessage] = useState<string>("");
   const [conversationId, setConversationId] =
     useState<Id<"conversations"> | null>(null);
+  const [chatParticipant, setChat] = useState<Id<"users"> | null>(null);
+
   console.log(currentChat);
 
   const sendMessage = useMutation(api.messages.sendMessage);
@@ -30,7 +32,7 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
   const createConversationMutation = useMutation(
     api.conversations.createConversation
   );
-  
+
   const conversationMessages = useQuery(
     api.messages.getConversationMessages,
     conversationId ? { conversationId } : "skip"
@@ -76,12 +78,14 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
 
     try {
       await sendMessage({
-        senderId: user.id as Id<"users">,
+        senderId: currentChat?.userId as Id<"users">,
         conversationId,
         content: message,
       });
 
-      setMessage(""); // Clear the input field
+      console.log();
+
+      setMessage("");
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -114,24 +118,14 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
           </div>
 
           {/* Current Chat */}
-          {/* <div className="flex-1 bg-white overflow-y-auto p-4">
-            <div className="text-left">
-              <p className="bg-gray-200 p-2 rounded-lg mb-2 w-fit hover:bg-gray-300">
-                Hi there!
-              </p>
-              <p className="bg-blue-400 p-2 rounded-lg mb-2 w-fit ml-auto hover:bg-blue-500">
-                Hello! How can I help?
-              </p>
-            </div>
-            <p className="text-gray-500 text-center mt-4">No messages yet</p>
-          </div> */}
+
           <div className="flex-1 bg-white overflow-y-auto p-4">
             {conversationMessages?.length ? (
               conversationMessages.map((msg) => (
                 <p
                   key={msg._id}
                   className={`p-2 rounded-lg mb-2 w-fit ${
-                    msg.senderId === user?.id
+                    msg.senderId === currentChat.userId
                       ? "bg-blue-400 ml-auto text-white"
                       : "bg-gray-200 text-black"
                   }`}

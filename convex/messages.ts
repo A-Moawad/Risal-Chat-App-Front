@@ -24,7 +24,6 @@ export const sendMessage = mutation({
   },
 });
 
-
 export const getConversationMessages = query({
   args: {
     conversationId: v.id("conversations"),
@@ -37,11 +36,10 @@ export const getConversationMessages = query({
       .withIndex("byConversationId", (q) =>
         q.eq("conversationId", args.conversationId)
       )
-      .order("asc") // Ascending order
+      .order("asc")
       .collect();
 
     console.log("Fetched messages:", messages);
     return messages;
   },
 });
-
