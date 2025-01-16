@@ -9,6 +9,8 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { Button } from "./ui/button";
+import CurrentChatSkeleton from "@/helper/CurrentChatSkeleton";
+import NoConversation from "@/helper/NoConversation";
 
 type Chat = {
   userId: Id<"users">;
@@ -134,13 +136,7 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
                 </p>
               ))
             ) : (
-              <>
-                {!conversationMessages?.length && (
-                  <p className="text-gray-500 text-center mt-4">
-                    No messages yet. Start by sending a message!
-                  </p>
-                )}
-              </>
+              <>{!conversationMessages?.length && <CurrentChatSkeleton />}</>
             )}
           </div>
 
@@ -187,23 +183,7 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center text-center bg-white p-8">
-          <div>
-            <h2 className="text-xl font-bold text-gray-700 mb-4">
-              Welcome to the Chat!
-            </h2>
-            <p className="text-lg text-gray-500 mb-6">
-              No active chat at the moment. Start a new conversation with a
-              friend!
-            </p>
-            <div className="flex justify-center gap-6">
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                Start a New Chat
-              </button>
-              <button className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition">
-                Search for Friends
-              </button>
-            </div>
-          </div>
+          <NoConversation/>
         </div>
       )}
     </section>

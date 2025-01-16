@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { Id } from "convex/_generated/dataModel";
-import { SkeletonDemo } from "@/helper/ChatSkeleton";
+import { SkeletonDemo } from "@/helper/SingleChatSkeleton";
 
 type Chat = {
   userId: Id<"users">; // Use Id<"users">
