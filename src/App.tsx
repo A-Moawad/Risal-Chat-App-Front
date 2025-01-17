@@ -1,12 +1,13 @@
 import LoginPage from "./pages/LoginPage";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import HomePage from "./pages/HomePage";
+import Loading from "./helper/Loading";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useCurrentUser();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (

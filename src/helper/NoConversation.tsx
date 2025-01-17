@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Logo from "../assets/images/logo.svg"; // Adjust import if necessary
 
 function NoConversation() {
@@ -10,12 +11,12 @@ function NoConversation() {
       <p className="text-lg text-gray-500">
         Select a conversation or start a new chat to connect with friends.
       </p>
-      <button
+      <Button
         className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
         onClick={() => alert("Start a new conversation")}
       >
         Start New Chat
-      </button>
+      </Button>
     </div>
   );
 }
