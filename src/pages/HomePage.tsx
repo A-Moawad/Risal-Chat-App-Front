@@ -15,7 +15,7 @@ const HomePage = () => {
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
 
   return (
-    <div className="flex h-[90%]">
+    <div className="flex h-[100vh]">
       <ChatsSection
         addFriendButtonClicked={addFriendButtonClicked}
         setAddFriendButtonClicked={setAddFriendButtonClicked}

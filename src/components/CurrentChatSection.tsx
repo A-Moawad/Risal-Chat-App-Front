@@ -94,7 +94,7 @@ export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
   };
 
   return (
-    <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow- sm:border sm:border-l-gray-200">
+    <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow- sm:border sm:border-l-gray-200 rounded-md sm:rounded-l-none">
       {currentChat ? (
         <>
           {/* Header */}

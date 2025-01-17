@@ -29,7 +29,7 @@ body {
   background-color: #eee;
   background-image: url("/src/assets/images/background.jpg");
   background-size: cover;
-  background-repeat: no-repeat; 
+  /* background-repeat: no-repeat;  */
   background-position: center;
 }
 
