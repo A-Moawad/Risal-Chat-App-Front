@@ -1,10 +1,10 @@
 import AddFriend from "@/helper/AddFriend";
 import React from "react";
-import { IoMdMore } from "react-icons/io";
 import SearchBar from "@/helper/searchBar";
 import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
 import { Id } from "convex/_generated/dataModel";
+import UserMoreOPtoins from "@/helper/UserMoreOPtoins";
 
 type Chat = {
   userId: Id<"users">; // Use Id<"users">
@@ -33,10 +33,7 @@ const Chats = ({
             addFriendButtonClicked={addFriendButtonClicked}
             setAddFriendButtonClicked={setAddFriendButtonClicked}
           />
-          <IoMdMore
-            className="cursor-pointer text-2xl"
-            aria-label="More Options"
-          />
+          <UserMoreOPtoins/>
         </div>
       </section>
 

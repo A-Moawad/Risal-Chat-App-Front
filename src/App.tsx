@@ -1,31 +1,17 @@
 import LoginPage from "./pages/LoginPage";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import HomePage from "./pages/HomePage";
-import { SignOutButton } from "@clerk/clerk-react";
-import { Button } from "./components/ui/button";
 
 export default function App() {
   const { isLoading, isAuthenticated } = useCurrentUser();
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <main className="w-full h-full px-4">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : isAuthenticated ? (
-        <>
-          <HomePage />
-          <Button className="bg-sky-600 py-1 text-center text-white rounded-md mx-auto">
-            <SignOutButton />
-          </Button>
-        </>
-      ) : (
-        <LoginPage />
-      )}
-      {/* <LoginPage />
-      <HomePage />
-      <Button className="bg-sky-600 py-1 text-center text-white rounded-md mx-auto">
-        <SignOutButton />
-      </Button> */}
+      {isAuthenticated ? <HomePage /> : <LoginPage />}
     </main>
   );
 }
