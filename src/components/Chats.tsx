@@ -6,6 +6,7 @@ import AddFriendForm from "@/helper/AddFriendForm";
 import { Id } from "convex/_generated/dataModel";
 import UserMoreOPtoins from "@/helper/UserMoreOPtoins";
 
+
 type Chat = {
   userId: Id<"users">; // Use Id<"users">
   friendId: Id<"users">; // Use Id<"users">
