@@ -16,7 +16,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const UserMoreOptions = () => {
+type ChatsProps = {
+  userProfileButtonClicked: boolean;
+  setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const UserMoreOptions = ({
+  userProfileButtonClicked,
+  setUserProfileButtonClicked,
+}: ChatsProps) => {
+
+  const handleUserBtnClick = () => {
+    setUserProfileButtonClicked(true)
+  }
   return (
     <TooltipProvider>
       <DropdownMenu>
@@ -40,7 +52,8 @@ const UserMoreOptions = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => alert("View Profile")}
+            onClick={handleUserBtnClick}
+
           >
             View Profile
           </DropdownMenuItem>

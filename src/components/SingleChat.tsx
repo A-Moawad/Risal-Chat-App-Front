@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import avatar from "../assets/images/avatar.png";
+    import avatar from "../assets/images/avatar.png";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";

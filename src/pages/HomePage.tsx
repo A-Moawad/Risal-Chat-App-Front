@@ -11,6 +11,8 @@ type Chat = {
 const HomePage = () => {
   const [addFriendButtonClicked, setAddFriendButtonClicked] =
     useState<boolean>(false);
+  const [userProfileButtonClicked, setUserProfileButtonClicked] =
+  useState<boolean>(false);
 
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
 
@@ -21,6 +23,8 @@ const HomePage = () => {
         setAddFriendButtonClicked={setAddFriendButtonClicked}
         currentChat={currentChat}
         setCurrentChat={setCurrentChat}
+        userProfileButtonClicked={userProfileButtonClicked}
+        setUserProfileButtonClicked={setUserProfileButtonClicked}
       />
       <CurrentChatSection currentChat={currentChat} />
     </div>

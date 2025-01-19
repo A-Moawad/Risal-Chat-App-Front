@@ -14,11 +14,15 @@ type Chat = {
 
 type ChatsProps = {
   addFriendButtonClicked: boolean;
+  userProfileButtonClicked: boolean;
+  setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   currentChat: Chat | null;
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 };
 const Chats = ({
+  userProfileButtonClicked,
+  setUserProfileButtonClicked,
   addFriendButtonClicked,
   setAddFriendButtonClicked,
   currentChat,
@@ -34,7 +38,10 @@ const Chats = ({
             addFriendButtonClicked={addFriendButtonClicked}
             setAddFriendButtonClicked={setAddFriendButtonClicked}
           />
-          <UserMoreOPtoins/>
+          <UserMoreOPtoins
+            userProfileButtonClicked={userProfileButtonClicked}
+            setUserProfileButtonClicked={setUserProfileButtonClicked}
+          />
         </div>
       </section>
 
