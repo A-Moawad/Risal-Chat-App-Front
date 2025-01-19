@@ -77,8 +77,8 @@ function SingleChat({
               alt="Profile avatar"
               className="w-12 h-12 rounded-full object-cover"
             />
-            <div className="flex-1">
-              <h2 className="md:text-lg font-bold">{name}</h2>
+            <div className="flex-1  text-start">
+              <h2 className="md:text-lg font-bold ">{name}</h2>
               <p className="text-sm text-gray-600 truncate">{message}</p>
             </div>
             <div className="text-right">
