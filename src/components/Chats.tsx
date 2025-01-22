@@ -5,29 +5,17 @@ import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
 import { Id } from "convex/_generated/dataModel";
 import UserMoreOPtoins from "@/helper/UserMoreOPtoins";
+import { useChat } from "@/contexts/chatContext";
 
 
-type Chat = {
-  userId: Id<"users">; // Use Id<"users">
-  friendId: Id<"users">; // Use Id<"users">
-};
-
-type ChatsProps = {
-  addFriendButtonClicked: boolean;
-  userProfileButtonClicked: boolean;
-  setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
-  setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
-  currentChat: Chat | null;
-  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
-};
-const Chats = ({
-  userProfileButtonClicked,
-  setUserProfileButtonClicked,
-  addFriendButtonClicked,
-  setAddFriendButtonClicked,
-  currentChat,
-  setCurrentChat,
-}: ChatsProps) => {
+  
+  const Chats = () => {
+    const {
+      currentChat,
+      setCurrentChat,
+      addFriendButtonClicked,
+      setAddFriendButtonClicked,
+    } = useChat();
   return (
     <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4 px-3 rounded-md sm:rounded-r-none">
       {/* Header */}
@@ -39,8 +27,7 @@ const Chats = ({
             setAddFriendButtonClicked={setAddFriendButtonClicked}
           />
           <UserMoreOPtoins
-            userProfileButtonClicked={userProfileButtonClicked}
-            setUserProfileButtonClicked={setUserProfileButtonClicked}
+            
           />
         </div>
       </section>

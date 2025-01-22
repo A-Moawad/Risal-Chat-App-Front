@@ -15,16 +15,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useChat } from "@/contexts/chatContext";
 
-type ChatsProps = {
-  userProfileButtonClicked: boolean;
-  setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
-const UserMoreOptions = ({
-  userProfileButtonClicked,
-  setUserProfileButtonClicked,
-}: ChatsProps) => {
+const UserMoreOptions = () => {
+  const { userProfileButtonClicked, setUserProfileButtonClicked } = useChat();;
 
   const handleUserBtnClick = () => {
     setUserProfileButtonClicked(true)

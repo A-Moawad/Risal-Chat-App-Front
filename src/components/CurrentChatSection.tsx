@@ -7,20 +7,18 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Id } from "convex/_generated/dataModel";
 import { Button } from "./ui/button";
 import CurrentChatSkeleton from "@/helper/CurrentChatSkeleton";
 import NoConversation from "@/helper/NoConversation";
+import { useChat } from "@/contexts/chatContext";
+import { Id } from "convex/_generated/dataModel";
 
-type Chat = {
-  userId: Id<"users">;
-  friendId: Id<"users">;
-};
-type CurrentChatSectionProps = {
-  currentChat: Chat | null;
-};
-
-export default function ChatLayout({ currentChat }: CurrentChatSectionProps) {
+export default function ChatLayout() {
+  const {
+    currentChat,
+    setCurrentChat,
+  } = useChat();
+  
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
   const [conversationId, setConversationId] =
