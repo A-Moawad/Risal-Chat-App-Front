@@ -13,6 +13,8 @@ type ChatContextType = {
   setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   currentChat: Chat | null;
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
+  isArrowLeftClicked: boolean;
+  setIsArrowLeftClicked: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [userProfileButtonClicked, setUserProfileButtonClicked] =
     useState(false);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+  const [isArrowLeftClicked, setIsArrowLeftClicked] = useState(false);
 
   return (
     <ChatContext.Provider
@@ -32,6 +35,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setAddFriendButtonClicked,
         userProfileButtonClicked,
         setUserProfileButtonClicked,
+        isArrowLeftClicked,
+        setIsArrowLeftClicked,
         currentChat,
         setCurrentChat,
       }}

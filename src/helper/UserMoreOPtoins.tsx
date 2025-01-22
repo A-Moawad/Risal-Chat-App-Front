@@ -17,13 +17,12 @@ import {
 } from "@/components/ui/tooltip";
 import { useChat } from "@/contexts/chatContext";
 
-
 const UserMoreOptions = () => {
-  const { userProfileButtonClicked, setUserProfileButtonClicked } = useChat();;
+  const { userProfileButtonClicked, setUserProfileButtonClicked } = useChat();
 
   const handleUserBtnClick = () => {
-    setUserProfileButtonClicked(true)
-  }
+    setUserProfileButtonClicked(true);
+  };
   return (
     <TooltipProvider>
       <DropdownMenu>
@@ -48,7 +47,6 @@ const UserMoreOptions = () => {
           <DropdownMenuItem
             className="cursor-pointer"
             onClick={handleUserBtnClick}
-
           >
             View Profile
           </DropdownMenuItem>

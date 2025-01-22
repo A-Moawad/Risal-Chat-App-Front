@@ -7,15 +7,13 @@ import { Id } from "convex/_generated/dataModel";
 import UserMoreOPtoins from "@/helper/UserMoreOPtoins";
 import { useChat } from "@/contexts/chatContext";
 
-
-  
-  const Chats = () => {
-    const {
-      currentChat,
-      setCurrentChat,
-      addFriendButtonClicked,
-      setAddFriendButtonClicked,
-    } = useChat();
+const Chats = () => {
+  const {
+    currentChat,
+    setCurrentChat,
+    addFriendButtonClicked,
+    setAddFriendButtonClicked,
+  } = useChat();
   return (
     <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4 px-3 rounded-md sm:rounded-r-none">
       {/* Header */}
@@ -26,9 +24,7 @@ import { useChat } from "@/contexts/chatContext";
             addFriendButtonClicked={addFriendButtonClicked}
             setAddFriendButtonClicked={setAddFriendButtonClicked}
           />
-          <UserMoreOPtoins
-            
-          />
+          <UserMoreOPtoins />
         </div>
       </section>
 
@@ -44,8 +40,6 @@ import { useChat } from "@/contexts/chatContext";
       {addFriendButtonClicked && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
           <AddFriendForm
-            addFriendButtonClicked={addFriendButtonClicked}
-            setAddFriendButtonClicked={setAddFriendButtonClicked}
           />
         </div>
       )}

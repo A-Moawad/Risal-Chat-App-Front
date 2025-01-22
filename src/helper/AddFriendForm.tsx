@@ -4,20 +4,15 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
 import { toast } from "sonner";
+import { useChat } from "@/contexts/chatContext";
 
 interface IFormInput {
   email: string;
 }
 
-type Props = {
-  addFriendButtonClicked: boolean;
-  setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
-};
+function AddFriendForm() {
+  const { addFriendButtonClicked, setAddFriendButtonClicked } = useChat();
 
-function AddFriendForm({
-  addFriendButtonClicked,
-  setAddFriendButtonClicked,
-}: Props) {
   const handleArrowLeftClick = () => {
     setAddFriendButtonClicked(false);
   };

@@ -3,7 +3,6 @@ import Chats from "./Chats";
 import UserProfilePage from "@/pages/UserProfilePage";
 import { useChat } from "@/contexts/chatContext";
 
-
 function ChatsSection() {
   const {
     addFriendButtonClicked,
@@ -14,14 +13,11 @@ function ChatsSection() {
     <>
       {addFriendButtonClicked ? (
         <AddFriendForm
-          addFriendButtonClicked={addFriendButtonClicked}
-          setAddFriendButtonClicked={setAddFriendButtonClicked}
         />
       ) : userProfileButtonClicked ? (
-        <UserProfilePage/>
+        <UserProfilePage />
       ) : (
-        <Chats
-        />
+        <Chats />
       )}
     </>
   );

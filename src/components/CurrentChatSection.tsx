@@ -14,11 +14,8 @@ import { useChat } from "@/contexts/chatContext";
 import { Id } from "convex/_generated/dataModel";
 
 export default function ChatLayout() {
-  const {
-    currentChat,
-    setCurrentChat,
-  } = useChat();
-  
+  const { currentChat, setCurrentChat } = useChat();
+
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
   const [conversationId, setConversationId] =
@@ -181,7 +178,7 @@ export default function ChatLayout() {
         </>
       ) : (
         <div className="flex-1 flex items-center justify-center text-center bg-white p-8">
-          <NoConversation/>
+          <NoConversation />
         </div>
       )}
     </section>
