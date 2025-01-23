@@ -33,7 +33,7 @@ const Chats = () => {
 
       {/* Chats Section */}
       <div className="flex-1 overflow-y-auto">
-        <AllChats currentChat={currentChat} setCurrentChat={setCurrentChat} />
+        <AllChats  />
       </div>
 
       {/* Conditional Rendering for Add Friend */}
