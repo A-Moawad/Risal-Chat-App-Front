@@ -3,20 +3,15 @@ import SingleChat from "./SingleChat";
 import { useUser } from "@clerk/clerk-react";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { Id } from "convex/_generated/dataModel";
 import { SkeletonDemo } from "@/helper/SingleChatSkeleton";
+import { useChat } from "@/contexts/chatContext";
 
-type Chat = {
-  userId: Id<"users">; // Use Id<"users">
-  friendId: Id<"users">; // Use Id<"users">
-};
 
-type ChatsProps = {
-  currentChat: Chat | null;
-  setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
-};
-
-function AllChats({ currentChat, setCurrentChat }: ChatsProps) {
+function AllChats() {
+  const {
+    currentChat,
+    setCurrentChat,
+  } = useChat();
   const { user } = useUser();
   const friendList = useQuery(api.users.getFriendList);
 

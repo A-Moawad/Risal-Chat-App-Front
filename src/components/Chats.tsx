@@ -3,7 +3,6 @@ import React from "react";
 import SearchBar from "@/helper/searchBar";
 import AllChats from "./AllChats";
 import AddFriendForm from "@/helper/AddFriendForm";
-import { Id } from "convex/_generated/dataModel";
 import UserMoreOPtoins from "@/helper/UserMoreOPtoins";
 import { useChat } from "@/contexts/chatContext";
 
@@ -14,6 +13,7 @@ const Chats = () => {
     addFriendButtonClicked,
     setAddFriendButtonClicked,
   } = useChat();
+
   return (
     <div className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh]  flex flex-col gap-4 px-3 rounded-md sm:rounded-r-none">
       {/* Header */}
