@@ -90,11 +90,84 @@ export const getIdByExternalId = query(
   }
 );
 
+// get profile image
+// export const getProfileImage = query({
+//   args: {storageId: v.id("_storage"),},
+//   handler: async (ctx, { storageId }) => {
+//     const url = await ctx.storage.getUrl(storageId);
+//     return url;
+//     // const currentUser = await getCurrentUserOrThrow(ctx);
+//     // return currentUser.avatarUrl;
+//   },
+// });
+
+export const updateProfileImage = mutation({
+  args: { storageId: v.id("_storage") },
+  handler: async (ctx, args) => {
+    const currentUser = await getCurrentUserOrThrow(ctx);
+
+    await ctx.db.patch(currentUser._id, { avatarUrl: args.storageId });
+
+    return { success: true };
+  },
+});
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  const uploadUrl = await ctx.storage.generateUploadUrl();
+  return uploadUrl;
+});
+
+// get profile image
+export const getProfileImage = query({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = getCurrentUserOrThrow(ctx);
+    const userId = (await currentUser)._id;
+    const user = await ctx.db.get(userId);
+    console.log("user", user);
+    console.log("UserId: " + userId);
+    if (!user?.avatarUrl) {
+      return null;
+    }
+    const url = await ctx.storage.getUrl(user.avatarUrl);
+    return url
+  },
+}); 
+  
+export const getUserProfileImage = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, { userId }) => {
+    // Fetch the user document from the database
+    const user = await ctx.db.get(userId);
+
+    // Check if the user exists
+    if (!user) {
+      console.warn(`User with ID ${userId} not found.`);
+      return null;
+    }
+
+    // Check if the user has an avatar URL
+    if (!user.avatarUrl) {
+      console.info(`User ${userId} has no avatar URL.`);
+      return null;
+    }
+
+    // Generate a public URL for the avatar
+    try {
+      const url = await ctx.storage.getUrl(user.avatarUrl);
+      return url;
+    } catch (error) {
+      console.error(`Failed to fetch avatar URL for user ${userId}:`, error);
+      return null;
+    }
+  },
+});
+
+
 // add friend
 export const addFriend = mutation({
   args: { friendEmail: v.string() },
   async handler(ctx, { friendEmail }) {
-    // Get the current user
     const currentUser = await getCurrentUserOrThrow(ctx);
 
     // Find the friend by email

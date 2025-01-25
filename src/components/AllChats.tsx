@@ -5,13 +5,10 @@ import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { SkeletonDemo } from "@/helper/SingleChatSkeleton";
 import { useChat } from "@/contexts/chatContext";
-
+import avatar from "../assets/images/logo.svg"; // Your default avatar
 
 function AllChats() {
-  const {
-    currentChat,
-    setCurrentChat,
-  } = useChat();
+  const { currentChat, setCurrentChat } = useChat();
   const { user } = useUser();
   const friendList = useQuery(api.users.getFriendList);
 
@@ -25,22 +22,30 @@ function AllChats() {
         <SkeletonDemo />
       </>
     );
+
   if (friendList.length === 0) return <p>No friends yet</p>;
 
   return (
     <section className="flex flex-col gap-2">
-      {friendList.map((friend) => (
-        <SingleChat
-          currentChat={currentChat}
-          setCurrentChat={setCurrentChat}
-          friendId={friend._id}
-          key={friend._id}
-          name={friend.name}
-          message="Hello there!"
-          time="2:30 PM"
-          unread={2}
-        />
-      ))}
+      {friendList.map((friend) => {
+        // const avatarUrl = useQuery(api.users.getUserProfileImage, {
+        //   userId: friend._id,
+        // });
+
+        return (
+          <SingleChat
+            currentChat={currentChat}
+            setCurrentChat={setCurrentChat}
+            friendId={friend._id}
+            key={friend._id}
+            name={friend.name}
+            // url={avatarUrl || avatar} // Use the fetched avatar or fallback to default avatar
+            message="Hello there!"
+            time="2:30 PM"
+            unread={2}
+          />
+        );
+      })}
     </section>
   );
 }

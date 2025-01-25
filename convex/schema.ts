@@ -3,12 +3,11 @@ import { v } from "convex/values";
 
 export default defineSchema({
   messages: defineTable({
-    // messageId: v.string(), // Unique identifier (UUID for better uniqueness)
     conversationId: v.id("conversations"), // Associated conversation ID
     senderId: v.id("users"), // User ID of the sender
     content: v.string(), // The actual message text
     type: v.optional(v.string()), // E.g., 'text', 'image', 'video', etc.
-    mediaUrl: v.optional(v.string()), // Optional URL for media files
+    mediaUrl: v.optional(v.id("_storage")), // This will store the storageId (reference to media files like images)
     readBy: v.optional(v.array(v.id("users"))), // Array of user IDs who read the message
     createdAt: v.string(), // Timestamp when the message was created
     updatedAt: v.string(), // Timestamp for the last update
@@ -18,20 +17,18 @@ export default defineSchema({
     .index("byConversationId", ["conversationId", "createdAt"]), // Pagination-friendly index
 
   conversations: defineTable({
-    // _id: v.id("conversations"),
     participants: v.array(v.id("users")), // Array of user IDs involved in the conversation
     lastMessage: v.optional(v.id("messages")), // Optional ID of the last message in the conversation
     createdAt: v.string(), // Timestamp when the conversation was created
     updatedAt: v.string(), // Timestamp for the last update
     deletedAt: v.optional(v.string()), // Optional timestamp for soft deletion
-  })
-    .index("byParticipants", ["participants"]), // Index for participant lookups
-    // .index("byConversationId", ["_id"]),
+  }).index("byParticipants", ["participants"]), // Index for participant lookups
+  // .index("byConversationId", ["_id"]),
 
   users: defineTable({
     name: v.string(), // User's name
     email: v.string(), // Optional email address
-    avatarUrl: v.optional(v.string()), // Optional profile picture URL
+    avatarUrl: v.optional(v.id("_storage")), // This will store the storageId (reference to the avatar image)
     lastSeenAt: v.optional(v.string()), // Optional timestamp of last activity
     conversations: v.optional(v.array(v.id("conversations"))), // Optional list of conversation IDs
     friends: v.optional(v.array(v.id("users"))), // Optional friend list

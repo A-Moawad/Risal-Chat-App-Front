@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-    import avatar from "../assets/images/avatar.png";
+import avatar from "../assets/images/avatar.png";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { SkeletonDemo } from "@/helper/SingleChatSkeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -18,6 +17,7 @@ type ChatType = {
   time: string;
   unread: number;
   friendId: Id<"users">;
+  // avatarUrl?: Id<"_storage"> ; 
 };
 
 type Chat = {
@@ -38,6 +38,7 @@ function SingleChat({
   friendId,
   currentChat,
   setCurrentChat,
+  // avatarUrl,
 }: ChatType & ChatsProps) {
   const { user } = useUser();
   const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
@@ -67,18 +68,18 @@ function SingleChat({
       <Tooltip>
         <TooltipTrigger>
           <div
-            className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200  rounded"
+            className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200 rounded"
             onClick={handleClick}
             role="button"
             aria-label={`Open chat with ${name}`}
           >
             <img
-              src={avatar}
+              src={ avatar} // Fallback to default avatar
               alt="Profile avatar"
               className="w-12 h-12 rounded-full object-cover"
             />
-            <div className="flex-1  text-start">
-              <h2 className="md:text-lg font-bold ">{name}</h2>
+            <div className="flex-1 text-start">
+              <h2 className="md:text-lg font-bold">{name}</h2>
               <p className="text-sm text-gray-600 truncate">{message}</p>
             </div>
             <div className="text-right">
@@ -93,13 +94,13 @@ function SingleChat({
           <TooltipContent
             side="bottom"
             align="center"
-            sideOffset={1} // Adds space between the tooltip and trigger
-            alignOffset={10} // Moves tooltip alignment slightl
-            className="w-auto  px-3 py-2 flex items-center justify-center border border-gray-300 bg-white rounded"
+            sideOffset={1}
+            alignOffset={10}
+            className="w-auto px-3 py-2 flex items-center justify-center border border-gray-300 bg-white rounded"
           >
-            <p className="text-xs text-gray-700 text-center leading-tight ">
+            <p className="text-xs text-gray-700 text-center leading-tight">
               {name}
-            </p>{" "}
+            </p>
           </TooltipContent>
         </TooltipTrigger>
       </Tooltip>
