@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import avatar from "../assets/images/avatar.png";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
@@ -17,7 +16,7 @@ type ChatType = {
   time: string;
   unread: number;
   friendId: Id<"users">;
-  // avatarUrl?: Id<"_storage"> ; 
+  url?: string;
 };
 
 type Chat = {
@@ -38,11 +37,16 @@ function SingleChat({
   friendId,
   currentChat,
   setCurrentChat,
-  // avatarUrl,
+  url, // Use this for dynamic profile images
 }: ChatType & ChatsProps) {
   const { user } = useUser();
   const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
 
+  const avatarUrl = useQuery(api.users.getUserProfileImage, {
+    userId: friendId,
+  });
+
+  // Fetch Convex User ID
   const userConvexIdQuery = useQuery(
     api.users.getIdByExternalId,
     user?.id ? { externalId: user.id } : "skip"
@@ -68,14 +72,18 @@ function SingleChat({
       <Tooltip>
         <TooltipTrigger>
           <div
-            className="flex items-center gap-4 p-4 cursor-pointer border-b border-gray-200 rounded"
+            className={`flex items-center gap-4 p-4 cursor-pointer border-b ${
+              currentChat?.friendId === friendId
+                ? "bg-gray-100"
+                : "border-gray-200"
+            } rounded`}
             onClick={handleClick}
             role="button"
             aria-label={`Open chat with ${name}`}
           >
             <img
-              src={ avatar} // Fallback to default avatar
-              alt="Profile avatar"
+              src={avatarUrl || url}
+              alt={`${name}'s avatar`}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex-1 text-start">

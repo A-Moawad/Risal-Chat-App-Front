@@ -26,6 +26,13 @@ export default function ChatLayout() {
 
   const sendMessage = useMutation(api.messages.sendMessage);
 
+  const avatarUrl = useQuery(
+    api.users.getUserProfileImage,
+    currentChat?.friendId
+      ? { userId: currentChat.friendId as Id<"users"> }
+      : "skip"
+  );
+
   const createConversationMutation = useMutation(
     api.conversations.createConversation
   );
@@ -96,9 +103,9 @@ export default function ChatLayout() {
           <div className="flex bg-gray-100 p-3 items-center justify-between">
             <div className="flex gap-3 items-center">
               <img
-                src={avatar}
+                src={avatarUrl || avatar}
                 alt={`Avatar of ${currentFriend?.name || "Unknown"}`}
-                className="w-8 h-8 cursor-pointer rounded-full"
+                className="w-10 h-10 cursor-pointer rounded-full"
               />
 
               <h2 className="font-bold">

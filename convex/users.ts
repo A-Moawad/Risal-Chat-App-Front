@@ -137,10 +137,8 @@ export const getProfileImage = query({
 export const getUserProfileImage = query({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
-    // Fetch the user document from the database
     const user = await ctx.db.get(userId);
 
-    // Check if the user exists
     if (!user) {
       console.warn(`User with ID ${userId} not found.`);
       return null;
