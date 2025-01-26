@@ -39,6 +39,8 @@ function SingleChat({
   setCurrentChat,
   url, // Use this for dynamic profile images
 }: ChatType & ChatsProps) {
+
+  
   const { user } = useUser();
   const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
 

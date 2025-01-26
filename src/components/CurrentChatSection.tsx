@@ -12,12 +12,15 @@ import CurrentChatSkeleton from "@/helper/CurrentChatSkeleton";
 import NoConversation from "@/helper/NoConversation";
 import { useChat } from "@/contexts/chatContext";
 import { Id } from "convex/_generated/dataModel";
+import AddFileBtn from "@/helper/AddFileBtn";
 
 export default function ChatLayout() {
   const { currentChat, setCurrentChat } = useChat();
 
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
+  let senderId = currentChat?.userId as Id<"users">;
+
   const [conversationId, setConversationId] =
     useState<Id<"conversations"> | null>(null);
   const [chatParticipant, setChat] = useState<Id<"users"> | null>(null);
@@ -126,16 +129,24 @@ export default function ChatLayout() {
           <div className="flex-1 bg-white overflow-y-auto p-4">
             {conversationMessages?.length ? (
               conversationMessages.map((msg) => (
-                <p
+                <div
                   key={msg._id}
-                  className={`p-2 rounded-lg mb-2 w-fit ${
+                  className={`p-2 rounded-lg mb-2 w-fit max-w-xs ${
                     msg.senderId === currentChat.userId
                       ? "bg-blue-400 ml-auto text-white"
                       : "bg-gray-200 text-black"
                   }`}
                 >
-                  {msg.content}
-                </p>
+                  {msg.type === "image" ? (
+                    <img
+                      src={msg.url} // The `url` should already be resolved from the backend
+                      alt="Sent media"
+                      className="rounded-lg max-w-full"
+                    />
+                  ) : (
+                    <p>{msg.content}</p>
+                  )}
+                </div>
               ))
             ) : (
               <>{!conversationMessages?.length && <CurrentChatSkeleton />}</>
@@ -144,11 +155,12 @@ export default function ChatLayout() {
 
           {/* Input Messages */}
           <div className="bg-gray-100 h-14 flex items-center px-2">
-            <IoIosAdd
-              className="text-3xl text-gray-500 cursor-pointer hover:text-gray-600 mr-2"
-              aria-label="Add Media"
-              title="Add Media"
-            />
+            {conversationId && (
+              <AddFileBtn
+                senderId={currentChat?.userId as Id<"users">}
+                conversationId={conversationId}
+              />
+            )}
             {conversationId ? (
               <form className="flex items-center w-full" onSubmit={handleSend}>
                 <input

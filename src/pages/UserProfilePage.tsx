@@ -65,6 +65,7 @@ function UserProfilePage() {
 
   return (
     <section className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh] py-8 flex flex-col gap-6 shadow-lg rounded-md sm:rounded-r-none">
+      {/* Header  */}
       <div className="flex items-center gap-4 px-6">
         <GoArrowLeft
           className="text-xl text-gray-600 cursor-pointer"
@@ -73,7 +74,7 @@ function UserProfilePage() {
         />
         <h1 className="text-2xl font-bold">User Profile</h1>
       </div>
-
+      {/* avatar  */}
       <div className="flex items-center gap-4 px-6">
         <Image url={avatarUrl || undefined} />
         <h2 className="font-bold text-lg">{user?.firstName || "User"}</h2>

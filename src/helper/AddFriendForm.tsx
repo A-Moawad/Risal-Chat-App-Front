@@ -5,6 +5,7 @@ import { api } from "../../convex/_generated/api";
 import SingleChat from "@/components/SingleChat";
 import { toast } from "sonner";
 import { useChat } from "@/contexts/chatContext";
+import UserFriendChat from "@/components/UserFriendChat";
 
 interface IFormInput {
   email: string;
@@ -99,12 +100,11 @@ function AddFriendForm() {
         <h2 className="text-lg text-gray-500 text-center">Friends List</h2>
         <ul>
           {friendList?.map((friend) => (
-            <li key={friend._id}>
-              <SingleChat
+            <li key={friend._id} className="bg-red-500 rounded">
+              <UserFriendChat
                 name={friend?.name}
-                message="hi"
-                time="12:00 PM"
-                unread={0}
+                friendId={friend._id}
+                description="Hey In Risal"
               />
             </li>
           ))}

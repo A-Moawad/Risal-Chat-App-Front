@@ -5,7 +5,7 @@ export default defineSchema({
   messages: defineTable({
     conversationId: v.id("conversations"), // Associated conversation ID
     senderId: v.id("users"), // User ID of the sender
-    content: v.string(), // The actual message text
+    content: v.optional(v.string()), // The actual message text
     type: v.optional(v.string()), // E.g., 'text', 'image', 'video', etc.
     mediaUrl: v.optional(v.id("_storage")), // This will store the storageId (reference to media files like images)
     readBy: v.optional(v.array(v.id("users"))), // Array of user IDs who read the message
