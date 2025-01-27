@@ -7,7 +7,7 @@ import { Id } from "convex/_generated/dataModel";
 
 type MessageType = {
   senderId: Id<"users">;
-  conversationId: Id<"conversations"> | null;
+  conversationId: Id<"conversations"> ;
 };
 function AddFileBtn({ senderId, conversationId }: MessageType) {
   const imageInput = useRef<HTMLInputElement>(null);
@@ -78,7 +78,7 @@ function AddFileBtn({ senderId, conversationId }: MessageType) {
           <p className="text-sm">{selectedImage.name}</p>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn btn-primary "
             disabled={isUploading}
           >
             {isUploading ? "Uploading..." : "Send Image"}

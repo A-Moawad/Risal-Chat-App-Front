@@ -3,7 +3,7 @@ import { FaSearch } from "react-icons/fa";
 import { IoMdMore, IoMdSend } from "react-icons/io";
 import { MdKeyboardVoice } from "react-icons/md";
 import { IoIosAdd } from "react-icons/io";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -12,22 +12,22 @@ import CurrentChatSkeleton from "@/helper/CurrentChatSkeleton";
 import NoConversation from "@/helper/NoConversation";
 import { useChat } from "@/contexts/chatContext";
 import { Id } from "convex/_generated/dataModel";
-import AddFileBtn from "@/helper/AddFileBtn";
+import { toast } from "sonner";
 
 export default function ChatLayout() {
   const { currentChat, setCurrentChat } = useChat();
-
   const { user } = useUser();
   const [message, setMessage] = useState<string>("");
-  let senderId = currentChat?.userId as Id<"users">;
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const imageInput = useRef<HTMLInputElement>(null);
 
   const [conversationId, setConversationId] =
     useState<Id<"conversations"> | null>(null);
-  const [chatParticipant, setChat] = useState<Id<"users"> | null>(null);
-
-  console.log(currentChat);
 
   const sendMessage = useMutation(api.messages.sendMessage);
+  const generateUploadUrl = useMutation(api.messages.generateUploadUrl);
+  const sendImage = useMutation(api.messages.sendImage);
 
   const avatarUrl = useQuery(
     api.users.getUserProfileImage,
@@ -78,23 +78,52 @@ export default function ChatLayout() {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!message.trim() || !user?.id || !conversationId) {
-      console.error("Missing message, user ID, or conversation ID");
+    if (!user?.id || !conversationId) {
+      console.error("Missing user ID or conversation ID");
       return;
     }
 
-    try {
-      await sendMessage({
-        senderId: currentChat?.userId as Id<"users">,
-        conversationId,
-        content: message,
-      });
+    if (selectedImage) {
+      // Handle image upload
+      try {
+        setIsUploading(true);
+        const postUrl = await generateUploadUrl();
+        const result = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": selectedImage.type },
+          body: selectedImage,
+        });
+        const json = await result.json();
+        if (!result.ok) {
+          throw new Error(`Upload failed: ${JSON.stringify(json)}`);
+        }
+        const { storageId } = json;
 
-      console.log();
+        await sendImage({
+          storageId,
+          senderId: currentChat?.userId as Id<"users">,
+          conversationId,
+        });
 
-      setMessage("");
-    } catch (error) {
-      console.error("Failed to send message:", error);
+        toast("Image sent successfully!");
+        setSelectedImage(null);
+      } catch (error) {
+        console.error("Error sending image:", error);
+      } finally {
+        setIsUploading(false);
+      }
+    } else if (message.trim()) {
+      // Handle text message
+      try {
+        await sendMessage({
+          senderId: currentChat?.userId as Id<"users">,
+          conversationId,
+          content: message,
+        });
+        setMessage("");
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
     }
   };
 
@@ -110,7 +139,6 @@ export default function ChatLayout() {
                 alt={`Avatar of ${currentFriend?.name || "Unknown"}`}
                 className="w-10 h-10 cursor-pointer rounded-full"
               />
-
               <h2 className="font-bold">
                 {currentFriend?.name || "Loading..."}
               </h2>
@@ -125,7 +153,6 @@ export default function ChatLayout() {
           </div>
 
           {/* Current Chat */}
-
           <div className="flex-1 bg-white overflow-y-auto p-4">
             {conversationMessages?.length ? (
               conversationMessages.map((msg) => (
@@ -139,7 +166,7 @@ export default function ChatLayout() {
                 >
                   {msg.type === "image" ? (
                     <img
-                      src={msg.url} // The `url` should already be resolved from the backend
+                      src={msg.url}
                       alt="Sent media"
                       className="rounded-lg max-w-full"
                     />
@@ -155,44 +182,43 @@ export default function ChatLayout() {
 
           {/* Input Messages */}
           <div className="bg-gray-100 h-14 flex items-center px-2">
-            {conversationId && (
-              <AddFileBtn
-                senderId={currentChat?.userId as Id<"users">}
-                conversationId={conversationId}
+            <input
+              title="input message"
+              type="file"
+              accept="image/*"
+              ref={imageInput}
+              onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => imageInput.current?.click()}
+              className="text-3xl text-gray-500 hover:text-gray-600 mr-2"
+              title="Add Media"
+              aria-label="Add Media"
+            >
+              <IoIosAdd />
+            </button>
+            
+            <form className="flex items-center w-full" onSubmit={handleSend}>
+              <input
+                type="text"
+                placeholder="Type a message"
+                className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
+                onChange={handleChange}
+                value={message}
               />
-            )}
-            {conversationId ? (
-              <form className="flex items-center w-full" onSubmit={handleSend}>
-                <input
-                  type="text"
-                  placeholder="Type a message"
-                  className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
-                  onChange={handleChange}
-                  value={message}
+              <Button
+                type="submit"
+                className="ml-2 bg-transparent border-none hover:bg-transparent"
+                disabled={!message.trim() && !selectedImage}
+              >
+                <IoMdSend
+                  className="text-3xl text-gray-500 cursor-pointer hover:text-blue-600"
+                  aria-label="Send"
                 />
-                {message.trim() ? (
-                  <Button
-                    type="submit"
-                    className="ml-2 bg-transparent border-none hover:bg-transparent"
-                    disabled={!message.trim() || !conversationId}
-                  >
-                    <IoMdSend
-                      className="text-3xl text-gray-500 cursor-pointer hover:text-blue-600"
-                      aria-label="Send"
-                    />
-                  </Button>
-                ) : (
-                  <MdKeyboardVoice
-                    className="text-3xl text-gray-500 cursor-pointer hover:text-gray-600 ml-2"
-                    aria-label="Voice Message"
-                  />
-                )}
-              </form>
-            ) : (
-              <div className="text-gray-500 text-center w-full">
-                Loading chat...
-              </div>
-            )}
+              </Button>
+            </form>
           </div>
         </>
       ) : (
