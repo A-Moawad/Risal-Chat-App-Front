@@ -100,7 +100,7 @@ function AddFriendForm() {
         <h2 className="text-lg text-gray-500 text-center">Friends List</h2>
         <ul>
           {friendList?.map((friend) => (
-            <li key={friend._id} className="bg-red-500 rounded">
+            <li key={friend._id} className="rounded">
               <UserFriendChat
                 name={friend?.name}
                 friendId={friend._id}
