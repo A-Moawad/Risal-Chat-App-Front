@@ -8,8 +8,6 @@ import { useChat } from "@/contexts/chatContext";
 
 const Chats = () => {
   const {
-    currentChat,
-    setCurrentChat,
     addFriendButtonClicked,
     setAddFriendButtonClicked,
   } = useChat();

@@ -15,6 +15,8 @@ type ChatContextType = {
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
   isArrowLeftClicked: boolean;
   setIsArrowLeftClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  searchValue: string;
+  setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -27,6 +29,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     useState(false);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [isArrowLeftClicked, setIsArrowLeftClicked] = useState(false);
+  const [searchValue, setSearchValue] = useState(""); // Added missing state
 
   return (
     <ChatContext.Provider
@@ -39,6 +42,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setIsArrowLeftClicked,
         currentChat,
         setCurrentChat,
+        searchValue,
+        setSearchValue,
       }}
     >
       {children}
