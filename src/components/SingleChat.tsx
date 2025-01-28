@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import {
   Tooltip,
   TooltipContent,
@@ -37,29 +37,66 @@ function SingleChat({
   friendId,
   currentChat,
   setCurrentChat,
-  url, // Use this for dynamic profile images
+  url,
 }: ChatType & ChatsProps) {
+  const [conversationId, setConversationId] =
+    useState<Id<"conversations"> | null>(null);
 
-  
   const { user } = useUser();
-  const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
-
-  const avatarUrl = useQuery(api.users.getUserProfileImage, {
-    userId: friendId,
-  });
 
   // Fetch Convex User ID
-  const userConvexIdQuery = useQuery(
+  const userConvexId = useQuery(
     api.users.getIdByExternalId,
     user?.id ? { externalId: user.id } : "skip"
   );
 
-  useEffect(() => {
-    if (userConvexIdQuery) {
-      setUserConvexId(userConvexIdQuery);
-    }
-  }, [userConvexIdQuery]);
+  // Fetch Friend's Avatar
+  const avatarUrl = useQuery(api.users.getUserProfileImage, {
+    userId: friendId,
+  });
 
+  // Fetch or create conversation ID
+  const conversationIdd = useQuery(
+    api.conversations.getConversationId,
+    userConvexId && friendId ? { user1: userConvexId, user2: friendId } : "skip"
+  );
+
+  if (!conversationId && conversationIdd) {
+    setConversationId(conversationIdd);
+  }
+
+  const createConversationMutation = useMutation(
+    api.conversations.createConversation
+  );
+
+  // Handle fallback to creating a new conversation
+  useEffect(() => {
+    if (user?.id && currentChat?.friendId && !conversationId) {
+      const createOrFetchConversation = async () => {
+        try {
+          const { conversationId } = await createConversationMutation({
+            user1: currentChat?.userId,
+            user2: currentChat?.friendId,
+          });
+          setConversationId(conversationId);
+        } catch (error) {
+          console.error("Failed to create or fetch conversation:", error);
+        }
+      };
+
+      createOrFetchConversation();
+    }
+  }, [user?.id, currentChat?.friendId, createConversationMutation]);
+
+  console.log("conversationId: ", conversationId);
+
+  const lastMessage = useQuery(
+    api.conversations.getLastMessage,
+    conversationId
+      ? { conversationId: conversationId as Id<"conversations"> }
+      : "skip"
+  );
+  console.log(lastMessage);
   const handleClick = () => {
     if (!userConvexId) {
       console.error("Convex ID is not yet available.");
@@ -68,6 +105,8 @@ function SingleChat({
     setCurrentChat({ userId: userConvexId, friendId });
     console.log(`Switched to chat with: ${name}`);
   };
+
+  const avatarSrc = avatarUrl || url || "/default-avatar.png";
 
   return (
     <TooltipProvider>
@@ -84,13 +123,13 @@ function SingleChat({
             aria-label={`Open chat with ${name}`}
           >
             <img
-              src={avatarUrl || url}
+              src={avatarSrc}
               alt={`${name}'s avatar`}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex-1 text-start">
               <h2 className="md:text-lg font-bold">{name}</h2>
-              <p className="text-sm text-gray-600 truncate">{message}</p>
+              <p className="text-sm text-gray-600 truncate">{lastMessage || message}</p>
             </div>
             <div className="text-right">
               <span className="text-xs text-gray-500">{time}</span>

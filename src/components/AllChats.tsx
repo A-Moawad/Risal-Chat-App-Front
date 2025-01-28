@@ -12,7 +12,6 @@ function AllChats() {
   const { user } = useUser();
   const friendList = useQuery(api.users.getFriendList);
 
-  // Check if friendList is loading
   if (!friendList)
     return (
       <>

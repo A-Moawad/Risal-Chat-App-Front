@@ -40,31 +40,57 @@ export const createConversation = mutation({
   },
 });
 
-// get other participant 1-1 chat
-// export const getOtherParticipant = query({
-//   args: { userId: v.id("users"), conversationId: v.id("conversations") },
-//   handler: async (ctx, args) => {
-//     const conversation = await ctx.db
-//       .query("conversations")
-//       .filter((doc) => doc._is === args.conversationId)
-//       .unique();
+// get conversation
+export const getConversationId = query({
+  args: {
+    user1: v.id("users"),
+    user2: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const sortedParticipants = [args.user1, args.user2].sort();
 
-//     if (!conversation) {
-//       throw new Error("Conversation not found");
-//     }
+    console.log("sorteed participants", sortedParticipants);
+    const conversation = await ctx.db
+      .query("conversations")
+      .withIndex("byParticipants", (q) =>
+        q.eq("participants", sortedParticipants)
+      )
+      .first();
 
-//     // Extract participants
-//     const participants = conversation.participants;
+    if (!conversation) {
+      console.log(
+        "No conversation found for participants:",
+        sortedParticipants
+      );
+      return null;
+    }
 
-//     // Find the other participant (not the current user)
-//     const otherParticipant = participants.find(
-//       (participantId) => participantId !== args.userId
-//     );
+    return conversation._id;
+  },
+});
 
-//     if (!otherParticipant) {
-//       throw new Error("Other participant not found");
-//     }
+// get conversation last message
+export const getLastMessage = query({
+  args: {
+    conversationId: v.id("conversations"),
+  },
+  handler: async (ctx, args) => {
+    const lastMessage = await ctx.db
+      .query("messages")
+      .withIndex("byConversationId", (q) =>
+        q.eq("conversationId", args.conversationId)
+      )
+      .order("desc")
+      .first();
 
-//     return otherParticipant;
-//   },
-// });
+    if (!lastMessage) {
+      return "No messages yet";
+    }
+
+    if (lastMessage.type === "image") {
+      return "photo....";
+    }
+
+    return lastMessage.content;
+  },
+});
