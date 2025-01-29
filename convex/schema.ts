@@ -28,6 +28,7 @@ export default defineSchema({
   users: defineTable({
     name: v.string(), // User's name
     email: v.string(), // Optional email address
+    description: v.optional(v.string()), // optional description
     avatarUrl: v.optional(v.id("_storage")), // This will store the storageId (reference to the avatar image)
     lastSeenAt: v.optional(v.string()), // Optional timestamp of last activity
     conversations: v.optional(v.array(v.id("conversations"))), // Optional list of conversation IDs

@@ -7,7 +7,7 @@ import { useChat } from "@/contexts/chatContext";
 
 type ChatType = {
   name: string;
-  description: string;
+  description: string | undefined;
   friendId: Id<"users">;
   url?: string;
 };

@@ -25,6 +25,7 @@ export const upsertFromClerk = internalMutation({
       email: data.email_addresses[0].email_address,
       conversations: [],
       friends: [],
+      description: "Hello there!",
       createdAt: now,
       updatedAt: now,
     };
@@ -90,17 +91,6 @@ export const getIdByExternalId = query(
   }
 );
 
-// get profile image
-// export const getProfileImage = query({
-//   args: {storageId: v.id("_storage"),},
-//   handler: async (ctx, { storageId }) => {
-//     const url = await ctx.storage.getUrl(storageId);
-//     return url;
-//     // const currentUser = await getCurrentUserOrThrow(ctx);
-//     // return currentUser.avatarUrl;
-//   },
-// });
-
 export const updateProfileImage = mutation({
   args: { storageId: v.id("_storage") },
   handler: async (ctx, args) => {
@@ -160,7 +150,6 @@ export const getUserProfileImage = query({
     }
   },
 });
-
 
 // add friend
 export const addFriend = mutation({

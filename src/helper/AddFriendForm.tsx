@@ -104,7 +104,7 @@ function AddFriendForm() {
               <UserFriendChat
                 name={friend?.name}
                 friendId={friend._id}
-                description="Hey In Risal"
+                description={friend.description || "Human being"}
               />
             </li>
           ))}
