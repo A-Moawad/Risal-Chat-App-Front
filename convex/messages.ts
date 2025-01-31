@@ -81,3 +81,33 @@ export const getConversationMessages = query({
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
+
+export const deleteMessagesByUserId = mutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const allConversations = await ctx.db.query("conversations").collect();
+    // Filter conversations where the user is a participant
+    const userConversations = allConversations.filter((conversation) =>
+      conversation.participants.includes(args.userId)
+    );
+
+
+    for (const conversation of userConversations) {
+      // Fetch all messages for the current conversation
+      const messages = await ctx.db
+        .query("messages")
+        .filter((q) => q.eq(q.field("conversationId"), conversation._id))
+        .collect();
+
+      // Delete each message
+      for (const message of messages) {
+        await ctx.db.delete(message._id);
+      }
+
+      // Delete the conversation itself
+      // await ctx.db.delete(conversation._id);
+    }
+
+    return { success: true, deletedConversations: userConversations.length };
+  },
+});
