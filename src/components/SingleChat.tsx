@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useChat } from "@/contexts/chatContext";
 
 type ChatType = {
   name: string;
@@ -41,14 +42,21 @@ function SingleChat({
 }: ChatType & ChatsProps) {
   const [conversationId, setConversationId] =
     useState<Id<"conversations"> | null>(null);
-
   const { user } = useUser();
+  const { currentUserId, setCurrentUserId } = useChat();
 
   // Fetch Convex User ID
   const userConvexId = useQuery(
     api.users.getIdByExternalId,
     user?.id ? { externalId: user.id } : "skip"
   );
+
+  // Set currentUserId to userConvexId when it is available
+  useEffect(() => {
+    if (userConvexId) {
+      setCurrentUserId(userConvexId);
+    }
+  }, [userConvexId, setCurrentUserId]);
 
   // Fetch Friend's Avatar
   const avatarUrl = useQuery(api.users.getUserProfileImage, {
@@ -61,9 +69,12 @@ function SingleChat({
     userConvexId && friendId ? { user1: userConvexId, user2: friendId } : "skip"
   );
 
-  if (!conversationId && conversationIdd) {
-    setConversationId(conversationIdd);
-  }
+  // Set the conversation ID
+  useEffect(() => {
+    if (conversationIdd) {
+      setConversationId(conversationIdd);
+    }
+  }, [conversationIdd]);
 
   const createConversationMutation = useMutation(
     api.conversations.createConversation
@@ -88,15 +99,13 @@ function SingleChat({
     }
   }, [user?.id, currentChat?.friendId, createConversationMutation]);
 
-  console.log("conversationId: ", conversationId);
-
   const lastMessage = useQuery(
     api.conversations.getLastMessage,
     conversationId
       ? { conversationId: conversationId as Id<"conversations"> }
       : "skip"
   );
-  console.log(lastMessage);
+
   const handleClick = () => {
     if (!userConvexId) {
       console.error("Convex ID is not yet available.");
@@ -129,7 +138,9 @@ function SingleChat({
             />
             <div className="flex-1 text-start">
               <h2 className="md:text-lg font-bold">{name}</h2>
-              <p className="text-sm text-gray-600 truncate">{lastMessage || message}</p>
+              <p className="text-sm text-gray-600 truncate">
+                {lastMessage || message}
+              </p>
             </div>
             <div className="text-right">
               <span className="text-xs text-gray-500">{time}</span>
