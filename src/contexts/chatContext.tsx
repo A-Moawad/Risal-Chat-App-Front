@@ -1,5 +1,8 @@
+import { useUser } from "@clerk/clerk-react";
+import { api } from "../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
-import React, { createContext, useContext, useState } from "react";
+import { useQuery } from "convex/react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 type Chat = {
   userId: Id<"users">;
@@ -17,6 +20,8 @@ type ChatContextType = {
   setIsArrowLeftClicked: React.Dispatch<React.SetStateAction<boolean>>;
   searchValue: string;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
+  currentUserId: Id<"users"> | null;
+  setCurrentUserId: React.Dispatch<React.SetStateAction<Id<"users"> | null>>; // Allow null
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -24,12 +29,20 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { user } = useUser();
   const [addFriendButtonClicked, setAddFriendButtonClicked] = useState(false);
   const [userProfileButtonClicked, setUserProfileButtonClicked] =
     useState(false);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [isArrowLeftClicked, setIsArrowLeftClicked] = useState(false);
-  const [searchValue, setSearchValue] = useState(""); // Added missing state
+  const [searchValue, setSearchValue] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<Id<"users"> | null>(null);
+
+  const userConvexId = useQuery(
+    api.users.getIdByExternalId,
+    user?.id ? { externalId: user.id } : "skip"
+  );
+
 
   return (
     <ChatContext.Provider
@@ -44,6 +57,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setCurrentChat,
         searchValue,
         setSearchValue,
+        currentUserId,
+        setCurrentUserId,
       }}
     >
       {children}
