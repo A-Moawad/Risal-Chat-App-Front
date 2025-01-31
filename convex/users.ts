@@ -120,10 +120,10 @@ export const getProfileImage = query({
       return null;
     }
     const url = await ctx.storage.getUrl(user.avatarUrl);
-    return url
+    return url;
   },
-}); 
-  
+});
+
 export const getUserProfileImage = query({
   args: { userId: v.id("users") },
   handler: async (ctx, { userId }) => {
@@ -216,5 +216,15 @@ export const getFriend = query({
   handler: async (ctx, { friendId }) => {
     const friend = await ctx.db.get(friendId);
     return friend || null;
+  },
+});
+
+export const deletCurrentUser = mutation({
+  args: {},
+  handler: async (ctx, args) => {
+    const currentUser = await getCurrentUserOrThrow(ctx);
+    
+    await ctx.db.delete(currentUser._id);
+
   },
 });
