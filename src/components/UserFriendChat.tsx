@@ -4,6 +4,7 @@ import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useChat } from "@/contexts/chatContext";
+import avatar from "../assets/images/avatar.png"; 
 
 type ChatType = {
   name: string;
@@ -67,7 +68,7 @@ function UserFriendChat({
       aria-label={`Open chat with ${name}`}
     >
       <img
-        src={avatarUrl || url}
+        src={avatarUrl || url || avatar}
         alt={`${name}'s avatar`}
         className="w-12 h-12 rounded-full object-cover"
       />
