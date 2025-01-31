@@ -40,7 +40,7 @@ export const createConversation = mutation({
   },
 });
 
-// get conversation
+// get one conversation
 export const getConversationId = query({
   args: {
     user1: v.id("users"),
@@ -69,6 +69,28 @@ export const getConversationId = query({
   },
 });
 
+// export const getUserConversationId = () => {
+//   args: {
+//     user1: v.id("users"),
+//     user2: v.id("users"),
+//   },
+// }
+
+// get uer conversations
+// export const getCurrentUserConversations = query({
+//   args: {
+//     user1: v.id("users"),
+//   },
+//   handler: async (ctx, args) => {
+//     const allConversations = await ctx.db.query("conversations").collect();
+//     const userConversations = allConversations.filter((conversation) =>
+//       conversation.participants.includes(args.user1)
+//     );
+
+//     return userConversations;
+//   },
+// });
+
 // get conversation last message
 export const getLastMessage = query({
   args: {
@@ -92,5 +114,24 @@ export const getLastMessage = query({
     }
 
     return lastMessage.content;
+  },
+});
+
+// delet current user conversations
+export const deleteUserConversations = mutation({
+  args: {
+    user1: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const allConversations = await ctx.db.query("conversations").collect();
+
+    const userConversations = allConversations.filter((conversation) =>
+      conversation.participants.includes(args.user1)
+    );
+
+    console.log(userConversations);
+    for (const conversation of userConversations) {
+      await ctx.db.delete(conversation._id);
+    }
   },
 });
