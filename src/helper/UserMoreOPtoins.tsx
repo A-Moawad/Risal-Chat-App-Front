@@ -67,27 +67,41 @@ const UserMoreOptions = () => {
     setIsDeleting(true); // Set loading state
 
     try {
-      // Delete all messages for the current user in all conversations
-      await deleteCurrentUserMessages({
-        userId: currentUserId as Id<"users">,
-      });
+      // 1️⃣ Delete all messages for the current user
+      await deleteCurrentUserMessages({ userId: currentUserId as Id<"users"> });
 
+      // 2️⃣ Delete all conversations of the user
       await deleteCurrentUserConversations({
         user1: currentUserId as Id<"users">,
       });
 
-      // Delete the current user from Convex
+      // 3️⃣ Delete the user from Convex
       await deleteCurrentUserConvex();
 
+      // 4️⃣ Delete the user from Clerk via backend
+      const response = await fetch("http://localhost:3000/user", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id }), // ✅ Send userId correctly
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unknown error while deleting user.");
+      }
+
       <div className="bg-green-500 text-white text-sm w-full px-4 py-3 rounded-md">
-        toast.success("User deleted successfully.");
+        toast.success("✅ User deleted successfully.");
       </div>;
     } catch (error) {
       <div className="bg-red-500 text-white text-sm w-full  py-3 px-4 rounded-md">
-        toast.error("Failed to delete user. Please try again.");
+        toast.error("❌ Failed to delete user. Please try again.");
       </div>;
     } finally {
-      setIsDeleting(false); // Reset loading state
+      setIsDeleting(false);
     }
   };
 

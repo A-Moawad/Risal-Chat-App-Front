@@ -4,7 +4,7 @@ import { Id } from "convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useQuery } from "convex/react";
 import { useChat } from "@/contexts/chatContext";
-import avatar from "../assets/images/avatar.png"; 
+import avatar from "../assets/images/avatar.png";
 
 type ChatType = {
   name: string;
@@ -23,12 +23,7 @@ type ChatsProps = {
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
 };
 
-function UserFriendChat({
-  name,
-  description,
-  friendId,
-  url, 
-}: ChatType ) {
+function UserFriendChat({ name, description, friendId, url }: ChatType) {
   const { currentChat, setCurrentChat } = useChat();
   const { user } = useUser();
   const [userConvexId, setUserConvexId] = useState<Id<"users"> | null>(null);
