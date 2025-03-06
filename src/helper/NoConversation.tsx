@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import Logo from "../assets/images/logo.svg"; // Adjust import if necessary
+import Logo from "../assets/images/logo.svg?url";
+
 
 function NoConversation() {
   return (

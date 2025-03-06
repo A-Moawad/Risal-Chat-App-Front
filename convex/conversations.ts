@@ -69,13 +69,6 @@ export const getConversationId = query({
   },
 });
 
-// export const getUserConversationId = () => {
-//   args: {
-//     user1: v.id("users"),
-//     user2: v.id("users"),
-//   },
-// }
-
 // get uer conversations
 // export const getCurrentUserConversations = query({
 //   args: {

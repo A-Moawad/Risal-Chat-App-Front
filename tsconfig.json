@@ -20,5 +20,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", "./convex", "vite.config.mts"]
+  "include": ["./src", "./convex", "vite.config.mts", "backend"]
 }

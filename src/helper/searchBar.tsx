@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { FaSearch } from "react-icons/fa";
 import { useChat } from "@/contexts/chatContext";
 
+
 function SearchBar() {
   const { searchValue, setSearchValue } = useChat()
 

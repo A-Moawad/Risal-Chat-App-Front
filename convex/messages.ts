@@ -44,6 +44,25 @@ export const sendImage = mutation({
   },
 });
 
+export const sendVoice = mutation({
+  args: {
+    storageId: v.id("_storage"),
+    senderId: v.id("users"),
+    conversationId: v.id("conversations"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("messages", {
+      senderId: args.senderId,
+      conversationId: args.conversationId,
+      mediaUrl: args.storageId,
+      createdAt: new Date().toISOString(),
+      type: "voice",
+      updatedAt: new Date().toISOString(),
+      readBy: [],
+    });
+  },
+});
+
 export const getConversationMessages = query({
   args: {
     conversationId: v.id("conversations"),
@@ -66,6 +85,8 @@ export const getConversationMessages = query({
         // Handle case where mediaUrl might be undefined
         let url = null;
         if (message.type === "image" && message.mediaUrl) {
+          url = await ctx.storage.getUrl(message.mediaUrl);
+        } else if (message.type === "voice" && message.mediaUrl) {
           url = await ctx.storage.getUrl(message.mediaUrl);
         }
 
@@ -90,7 +111,6 @@ export const deleteMessagesByUserId = mutation({
     const userConversations = allConversations.filter((conversation) =>
       conversation.participants.includes(args.userId)
     );
-
 
     for (const conversation of userConversations) {
       // Fetch all messages for the current conversation
