@@ -13,7 +13,16 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <App />
-        <Toaster position="top-right" />
+        <Toaster
+          position="top-right"
+          theme="light"
+          toastOptions={{
+            classNames: {
+              error: "bg-red-600 text-white font-bold px-6 py-3 shadow-md ",
+              success: "bg-green-500 text-white font-semibold px-6 py-3 shadow-md",
+            },
+          }}
+        />
       </ConvexProviderWithClerk>
     </ClerkProvider>
   </StrictMode>
