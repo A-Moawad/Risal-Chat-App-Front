@@ -3,7 +3,6 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { toast } from "sonner";
-import { uploadFile } from "@/utils/uploadFile";
 
 export function useSendMessage(
   conversationId: Id<"conversations"> | null,
@@ -17,6 +16,7 @@ export function useSendMessage(
   const [isUploading, setIsUploading] = useState(false);
   const [isVoiceUploading, setIsVoiceUploading] = useState(false);
 
+  // Send text message
   const sendTextMessage = async (message: string) => {
     if (!conversationId || !senderId) return;
     try {
@@ -26,66 +26,57 @@ export function useSendMessage(
         content: message,
       });
     } catch (error) {
-      toast.error("Failed to send message");
+      toast.error("Error sending text message", {
+        duration: 3000,
+        position: "top-right",
+        className: "bg-red-500 text-white font-semibold",
+      });
     }
   };
 
+  // Send image message
   const sendImageMessage = async (selectedImage: File) => {
     if (!conversationId || !senderId) return;
     try {
-        setIsUploading(true);
-        const uploadUrl = await generateUploadUrl();
-        const result = await fetch(uploadUrl, {
-          method: "POST",
-          headers: { "Content-Type": selectedImage!.type },
-          body: selectedImage,
-        })
-        const json = await result.json();
-        if (!result.ok) {
-          throw new Error(`Upload failed: ${JSON.stringify(json)}`);
-        }
-        const { storageId } = json;
-        await sendImageMessage(selectedImage);
-      toast.error("Error sending image");
+      setIsUploading(true);
+      const uploadUrl = await generateUploadUrl();
+      const result = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": selectedImage.type },
+        body: selectedImage,
+      });
+      const json = await result.json();
+      if (!result.ok) {
+        throw new Error(`Upload failed: ${JSON.stringify(json)}`);
+      }
+      const { storageId } = json;
+
+      await sendImage({
+        storageId,
+        senderId: senderId as Id<"users">,
+        conversationId,
+      });
+
+      toast.success("Image sent successfully!", {
+        duration: 3000,
+        position: "top-right",
+        className: "bg-green-500 text-white font-semibold",
+      });
     } catch (error) {
-      toast.error("Error sending image");
-    }
-    finally {
+      toast.error("Error sending image", {
+        duration: 3000,
+        position: "top-right",
+        className: "bg-red-500 text-white font-semibold",
+      });
+    } finally {
       setIsUploading(false);
     }
   };
 
-  // const sendVoiceMessage = async (audioBlob: Blob) => {
-  //   if (!conversationId || !senderId) return;
-  //   try {
-  //     setIsVoiceUploading(true);
-  //     const postUrl = await generateUploadUrl();
-  //     const result = await fetch(postUrl, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "audio/webm" },
-  //       body: audioBlob,
-  //     });
-  //     const json = await result.json();
-  //     if (!result.ok) throw new Error(`Upload failed: ${JSON.stringify(json)}`);
-  //     await sendVoice({
-  //       storageId: json.storageId,
-  //       senderId: senderId as Id<"users">,
-  //       conversationId,
-  //     });
-  //     toast.success("Voice message sent successfully!");
-  //   } catch (error) {
-  //     toast.error("Error sending voice message");
-  //   } finally {
-  //     setIsVoiceUploading(false);
-  //   }
-  // };
-
   return {
     sendTextMessage,
     sendImageMessage,
-    // sendVoiceMessage,
     isUploading,
-    setIsUploading
-    // isVoiceUploading,
+    setIsUploading,
   };
 }

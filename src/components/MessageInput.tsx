@@ -34,17 +34,26 @@ export default function MessageInput() {
     if (selectedImage) {
       try {
         setIsUploading(true);
+        console.log("selectedImage", selectedImage);
         await sendImageMessage(selectedImage);
         setSelectedImage(null);
       } catch (error) {
-        toast.error("Error sending image");
+        toast.error("Error sending image", {
+          duration: 3000,
+          position: "top-right",
+          className: "bg-red-500 text-white font-semibold",
+        });
       }
     } else if (message.trim()) {
       try {
         await sendTextMessage(message);
         setMessage("");
       } catch (error) {
-        toast.error("Error sending text message");
+        toast.error("Error sending text message", {
+          duration: 3000,
+          position: "top-right",
+          className: "bg-red-500 text-white font-semibold",
+        });
       }
     }
   };
@@ -74,9 +83,9 @@ export default function MessageInput() {
           className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
           onChange={(e) => setMessage(e.target.value)}
           value={message}
-          disabled={isUploading  } // Disable while uploading
+          disabled={isUploading} // Disable while uploading
         />
-        <Button type="submit" disabled={isUploading }>
+        <Button type="submit" disabled={isUploading}>
           <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
         </Button>
       </form>
