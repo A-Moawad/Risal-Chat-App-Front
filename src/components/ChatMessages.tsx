@@ -22,9 +22,9 @@ export default function ChatMessages() {
   useEffect(() => {
     if (conversationMessages?.length) {
       const lastMessage = conversationMessages[conversationMessages.length - 1];
-      if (lastMessage.type === "voice") {
-        audioRef.current?.audio.current?.play(); // Autoplay the last voice message
-      }
+      // if (lastMessage.type === "voice") {
+      //   audioRef.current?.audio.current?.play(); // Autoplay the last voice message
+      // }
     }
   }, [conversationMessages]);
 
@@ -60,7 +60,8 @@ export default function ChatMessages() {
               <>
                 {console.log(`Audio URL: ${msg.url}`)}
                 <AudioPlayer
-                  ref={index === conversationMessages.length - 1 ? audioRef : null} // Set ref only for last message
+                    // ref={index === conversationMessages.length - 1 ? audioRef : null}
+                    // Set ref only for last message
                   src={msg.url}
                   showJumpControls={false}
                   layout="stacked-reverse"
