@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 
 export function useVoiceRecorder() {
   const [isRecording, setIsRecording] = useState(false);
-  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const audioChunks = useRef<Blob[]>([]);
   const mediaRecorder = useRef<MediaRecorder | null>(null);
 
   const startRecording = async () => {
@@ -12,9 +12,12 @@ export function useVoiceRecorder() {
       mediaRecorder.current = recorder;
 
       recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setAudioChunks((prev) => [...prev, event.data]);
-        }
+        audioChunks.current.push(event.data);
+      };
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+        audioChunks.current = [];
       };
 
       recorder.start();
@@ -29,8 +32,8 @@ export function useVoiceRecorder() {
       if (!mediaRecorder.current) return resolve(null);
 
       mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        setAudioChunks([]);
+        const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+        audioChunks.current = [];
         resolve(audioBlob);
       };
 

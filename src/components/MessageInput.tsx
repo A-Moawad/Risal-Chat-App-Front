@@ -17,44 +17,45 @@ export default function MessageInput() {
   const {
     sendTextMessage,
     sendImageMessage,
-    // sendVoiceMessage,
+    sendVoiceMessage,
     isUploading,
     setIsUploading,
-    // isVoiceUploading,
+    isVoiceUploading,
+    setIsVoiceUploading,
   } = useSendMessage(conversationId, userId);
 
   const generateUploadUrl = useMutation(api.messages.generateUploadUrl);
   const [message, setMessage] = useState("");
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [recordedAudio, setRecordedAudio] = useState<Blob | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (selectedImage) {
-      try {
+    if (!selectedImage && !recordedAudio && !message.trim()) return; // Prevent empty message submission
+
+    try {
+      if (selectedImage) {
         setIsUploading(true);
-        console.log("selectedImage", selectedImage);
         await sendImageMessage(selectedImage);
         setSelectedImage(null);
-      } catch (error) {
-        toast.error("Error sending image", {
-          duration: 3000,
-          position: "top-right",
-          className: "bg-red-500 text-white font-semibold",
-        });
-      }
-    } else if (message.trim()) {
-      try {
+        setIsUploading(false);
+      } else if (recordedAudio) {
+        setIsVoiceUploading(true);
+        await sendVoiceMessage(recordedAudio);
+        setRecordedAudio(null);
+        setIsVoiceUploading(false);
+      } else {
         await sendTextMessage(message);
         setMessage("");
-      } catch (error) {
-        toast.error("Error sending text message", {
-          duration: 3000,
-          position: "top-right",
-          className: "bg-red-500 text-white font-semibold",
-        });
       }
+    } catch (error) {
+      toast.error(`Error sending message`, {
+        duration: 3000,
+        position: "top-right",
+        className: "bg-red-500 text-white font-semibold",
+      });
     }
   };
 
@@ -71,11 +72,14 @@ export default function MessageInput() {
       <Button
         onClick={() => imageInput.current?.click()}
         className="text-3xl text-gray-500 mr-2"
-        disabled={isUploading} // Disable when uploading
+        disabled={isUploading}
       >
         <IoIosAdd />
       </Button>
-      <VoiceRecorder />
+
+      {/* Handle voice recording */}
+      <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
+
       <form onSubmit={handleSend} className="flex items-center w-full">
         <input
           type="text"
@@ -83,9 +87,9 @@ export default function MessageInput() {
           className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
           onChange={(e) => setMessage(e.target.value)}
           value={message}
-          disabled={isUploading} // Disable while uploading
+          disabled={isUploading || isVoiceUploading}
         />
-        <Button type="submit" disabled={isUploading}>
+        <Button type="submit" disabled={isUploading || isVoiceUploading}>
           <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
         </Button>
       </form>

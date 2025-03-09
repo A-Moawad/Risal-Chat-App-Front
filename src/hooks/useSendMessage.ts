@@ -73,9 +73,38 @@ export function useSendMessage(
     }
   };
 
+  // send voice message
+  const sendVoiceMessage = async (audioBlob: Blob) => {
+    if (!conversationId || !senderId) return;
+    try {
+      setIsVoiceUploading(true);
+      const uploadUrl = await generateUploadUrl();
+      const result = await fetch(uploadUrl, {
+        method: "POST",
+        // headers: { "Content-Type": "audio/webm" },
+        headers: { "Content-Type": "audio/wav" },
+        body: audioBlob,
+      });
+
+      const json = await result.json();
+      if (!result.ok) throw new Error(`Upload failed: ${JSON.stringify(json)}`);
+
+      await sendVoice({ storageId: json.storageId, senderId, conversationId });
+
+      toast.success("Voice message sent!");
+    } catch (error) {
+      toast.error("Error sending voice message");
+    } finally {
+      setIsVoiceUploading(false);
+    }
+  };
+
   return {
     sendTextMessage,
     sendImageMessage,
+    sendVoiceMessage,
+    isVoiceUploading,
+    setIsVoiceUploading,
     isUploading,
     setIsUploading,
   };
