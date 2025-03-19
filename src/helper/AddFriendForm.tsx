@@ -1,14 +1,15 @@
-import { GoArrowLeft } from "react-icons/go";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
-import SingleChat from "@/components/SingleChat";
-import { toast } from "sonner";
-import { useChat } from "@/contexts/chatContext";
 import UserFriendChat from "@/components/UserFriendChat";
+import { useChat } from "@/contexts/chatContext";
+import { useMutation, useQuery } from "convex/react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { GoArrowLeft } from "react-icons/go";
+import { toast } from "sonner";
+import { api } from "../../convex/_generated/api";
+import { Id } from "convex/_generated/dataModel";
+
 
 interface IFormInput {
-  email: string;
+  email: string | undefined;
 }
 
 function AddFriendForm() {
@@ -28,7 +29,7 @@ function AddFriendForm() {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    toast.promise(addFriend({ friendEmail: data.email }), {
+    toast.promise(addFriend({ friendEmail: data.email ?? "" }), {
       loading: (
         <div className="bg-blue-500 text-white text-sm w-full px-4 py-3 rounded-md">
           Adding friend...
@@ -64,11 +65,9 @@ function AddFriendForm() {
         <input
           type="email"
           placeholder="Enter user's email"
-          className={`w-full p-3 border ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          } rounded-lg focus:outline-none focus:ring-2 ${
-            errors.email ? "focus:ring-red-500" : "focus:ring-blue-500"
-          } bg-gray-100`}
+          className={`w-full p-3 border ${errors.email ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 ${errors.email ? "focus:ring-red-500" : "focus:ring-blue-500"
+            } bg-gray-100`}
           {...register("email", {
             required: "Email is required",
             pattern: {
@@ -102,8 +101,8 @@ function AddFriendForm() {
           {friendList?.map((friend) => (
             <li key={friend?._id} className="rounded">
               <UserFriendChat
-                name={friend?.name}
-                friendId={friend?._id}
+                name={friend?.name ?? "Unknown"}
+                friendId={friend?._id as Id<"users">}
                 description={friend?.description || "Human being"}
               />
             </li>
