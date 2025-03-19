@@ -27,31 +27,26 @@ function AllChats() {
   if (friendList.length === 0) return <p>No friends yet</p>;
 
   const filteredFriends = friendList.filter(
-    (friend) => friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase())
+    (friend) => friend && friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase())
   );
-
 
   if (filteredFriends.length === 0) return <p>No matching friends found</p>;
 
   return (
     <section className="flex flex-col gap-2">
-      {filteredFriends.map((friend) =>
-        friend?._id ? (
-          <SingleChat
-            key={friend._id as Id<"users">}
-            friendId={friend._id as Id<"users">}
-            name={friend.name ?? "Unknown"}
-            url={avatar}
-            currentChat={currentChat}
-            setCurrentChat={setCurrentChat}
-            message="Hello there!"
-            time="2:30 PM"
-            unread={2}
-          />
-        ) : null
-      )}
-
-
+      {filteredFriends.map((friend) => (
+        <SingleChat
+          key={friend._id}
+          friendId={friend._id}
+          name={friend.name ?? "Unknown"}
+          url={avatar}
+          currentChat={currentChat}
+          setCurrentChat={setCurrentChat}
+          message="Hello there!"
+          time="2:30 PM"
+          unread={2}
+        />
+      ))}
     </section>
   );
 }
