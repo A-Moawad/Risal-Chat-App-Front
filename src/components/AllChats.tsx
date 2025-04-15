@@ -26,9 +26,8 @@ function AllChats() {
   if (friendList.length === 0) return <p>No friends yet</p>;
 
   const filteredFriends = friendList
-    .filter((friend) => friend !== null && friend !== undefined)
+    .filter((friend): friend is NonNullable<typeof friend> => friend !== null && friend !== undefined)
     .filter((friend) => friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase()));
-
 
   if (filteredFriends.length === 0) return <p>No matching friends found</p>;
 
