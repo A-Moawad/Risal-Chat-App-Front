@@ -1,7 +1,6 @@
 import { useChat } from "@/contexts/chatContext";
 import { SkeletonDemo } from "@/helper/SingleChatSkeleton";
 import { useUser } from "@clerk/clerk-react";
-import { Id } from "convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import avatar from "../assets/images/avatar.png";
@@ -26,9 +25,10 @@ function AllChats() {
 
   if (friendList.length === 0) return <p>No friends yet</p>;
 
-  const filteredFriends = friendList.filter(
-    (friend) => friend && friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const filteredFriends = friendList
+    .filter((friend) => friend !== null && friend !== undefined)
+    .filter((friend) => friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase()));
+
 
   if (filteredFriends.length === 0) return <p>No matching friends found</p>;
 
