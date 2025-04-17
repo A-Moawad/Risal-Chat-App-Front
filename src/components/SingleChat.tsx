@@ -1,8 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useUser } from "@clerk/clerk-react";
-import { Id } from "convex/_generated/dataModel";
-import { api } from "../../convex/_generated/api";
-import { useQuery, useMutation } from "convex/react";
 import {
   Tooltip,
   TooltipContent,
@@ -10,12 +5,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useChat } from "@/contexts/chatContext";
+import { useUser } from "@clerk/clerk-react";
+import { Id } from "convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
+import React, { useEffect, useState } from "react";
+import { api } from "../../convex/_generated/api";
+import readIcon from "@/assets/images/read.jpg";
+
+
 
 type ChatType = {
   name: string;
   message: string;
   time: string;
-  unread: number;
+  // unread: number;
   friendId: Id<"users">;
   url?: string;
 };
@@ -34,7 +37,7 @@ function SingleChat({
   name,
   message,
   time,
-  unread,
+  // unread,
   friendId,
   currentChat,
   setCurrentChat,
@@ -80,9 +83,12 @@ function SingleChat({
     api.conversations.createConversation
   );
 
+
+
+
   // Handle fallback to creating a new conversation
   useEffect(() => {
-    if (user?.id && currentChat?.friendId && !conversationId) {
+    if (user?.id && currentChat?.friendId && !conversationIdd) {
       const createOrFetchConversation = async () => {
         try {
           const { conversationId } = await createConversationMutation({
@@ -99,12 +105,40 @@ function SingleChat({
     }
   }, [user?.id, currentChat?.friendId, createConversationMutation]);
 
+  const markMessagesAsRead = useMutation(
+    api.markAsRead.markMessagesAsRead
+  )
+
+  useEffect(() => {
+    if (currentChat?.friendId === friendId && currentUserId && conversationId) {
+      markMessagesAsRead({
+        userId: currentUserId,
+        conversationId,
+        readAt: new Date().toISOString(),
+      });
+    }
+  }, [currentChat, currentUserId, conversationId, friendId, markMessagesAsRead]);
+
+
   const lastMessage = useQuery(
     api.conversations.getLastMessage,
     conversationId
       ? { conversationId: conversationId as Id<"conversations"> }
       : "skip"
   );
+
+
+  const unreadMessagesCount = useQuery(
+    api.markAsRead.getUnreadCount,
+    currentUserId && conversationId
+      ? {
+        userId: currentUserId,
+        conversationId: conversationId as Id<"conversations">,
+      }
+      : "skip"
+  );
+
+
 
   const handleClick = () => {
     if (!userConvexId) {
@@ -122,11 +156,10 @@ function SingleChat({
       <Tooltip>
         <TooltipTrigger>
           <div
-            className={`flex items-center gap-4 p-4 cursor-pointer border-b ${
-              currentChat?.friendId === friendId
-                ? "bg-gray-100"
-                : "border-gray-200"
-            } rounded`}
+            className={`flex items-center gap-4 p-4 cursor-pointer border-b ${currentChat?.friendId === friendId
+              ? "bg-gray-100"
+              : "border-gray-200"
+              } rounded`}
             onClick={handleClick}
             role="button"
             aria-label={`Open chat with ${name}`}
@@ -139,16 +172,31 @@ function SingleChat({
             <div className="flex-1 text-start">
               <h2 className="md:text-lg font-bold">{name}</h2>
               <p className="text-sm text-gray-600 truncate">
-                {lastMessage || message}
+                {lastMessage
+                  ? lastMessage.type === "image"
+                    ? "photo..."
+                    : lastMessage.content
+                  : "No messages yet"}
               </p>
+
             </div>
+
             <div className="text-right">
               <span className="text-xs text-gray-500">{time}</span>
-              {unread > 0 && (
+              {unreadMessagesCount !== undefined && unreadMessagesCount > 0 && (
                 <div className="bg-blue-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {unread}
+                  {unreadMessagesCount}
                 </div>
               )}
+              {lastMessage && lastMessage.senderId === currentUserId &&
+                lastMessage.readBy?.includes(friendId) && (
+                <img src={readIcon} alt="read icon" className="w-4 h-4" />
+
+                )}
+
+
+
+
             </div>
           </div>
           <TooltipContent

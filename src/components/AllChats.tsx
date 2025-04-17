@@ -8,7 +8,7 @@ import SingleChat from "./SingleChat";
 
 
 function AllChats() {
-  const { currentChat, setCurrentChat, searchValue } = useChat();
+  const {currentUserId, currentChat, setCurrentChat, searchValue } = useChat();
   const { user } = useUser();
   const friendList = useQuery(api.users.getFriendList);
 
@@ -29,6 +29,10 @@ function AllChats() {
     .filter((friend): friend is NonNullable<typeof friend> => friend !== null && friend !== undefined)
     .filter((friend) => friend._id && friend.name?.toLowerCase().includes(searchValue.toLowerCase()));
 
+  
+  
+  
+    
   if (filteredFriends.length === 0) return <p>No matching friends found</p>;
 
   return (
@@ -43,7 +47,7 @@ function AllChats() {
           setCurrentChat={setCurrentChat}
           message="Hello there!"
           time="2:30 PM"
-          unread={2}
+          // unread={2}
         />
       ))}
     </section>

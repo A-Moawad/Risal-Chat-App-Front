@@ -41,9 +41,9 @@ export default defineSchema({
     .index("byEmail", ["email"]), // Index for external ID lookups
 
   messageReads: defineTable({
-    messageId: v.id("messages"), // ID of the message being read
-    userId: v.id("users"), // ID of the user who read the message
-    readAt: v.string(), // Timestamp of when the message was read
+    messageId: v.id("messages"), 
+    userId: v.id("users"),
+    readAt: v.string(), 
   })
     .index("byMessageId", ["messageId"]) // Efficient lookup for read receipts
     .index("byUserId", ["userId"]), // Lookup messages read by a user
