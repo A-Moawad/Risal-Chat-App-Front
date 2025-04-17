@@ -85,6 +85,30 @@ export const getConversationId = query({
 // });
 
 // get conversation last message
+// export const getLastMessage = query({
+//   args: {
+//     conversationId: v.id("conversations"),
+//   },
+//   handler: async (ctx, args) => {
+//     const lastMessage = await ctx.db
+//       .query("messages")
+//       .withIndex("byConversationId", (q) =>
+//         q.eq("conversationId", args.conversationId)
+//       )
+//       .order("desc")
+//       .first();
+
+//     if (!lastMessage) {
+//       return "No messages yet";
+//     }
+
+//     if (lastMessage.type === "image") {
+//       return "photo....";
+//     }
+
+//     return lastMessage.content;
+//   },
+// });
 export const getLastMessage = query({
   args: {
     conversationId: v.id("conversations"),
@@ -98,17 +122,10 @@ export const getLastMessage = query({
       .order("desc")
       .first();
 
-    if (!lastMessage) {
-      return "No messages yet";
-    }
-
-    if (lastMessage.type === "image") {
-      return "photo....";
-    }
-
-    return lastMessage.content;
+    return lastMessage ?? null; 
   },
 });
+
 
 // delet current user conversations
 export const deleteUserConversations = mutation({
