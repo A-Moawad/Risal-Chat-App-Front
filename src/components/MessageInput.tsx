@@ -1,13 +1,13 @@
-import { useState, useRef } from "react";
-import { IoMdSend, IoIosAdd } from "react-icons/io";
-import VoiceRecorder from "./VoiceRecorder";
-import { Button } from "./ui/button";
 import { useChat } from "@/contexts/chatContext";
 import { useConversation } from "@/hooks/UseConversation";
-import { toast } from "sonner";
 import { useSendMessage } from "@/hooks/useSendMessage";
 import { useMutation } from "convex/react";
+import { useRef, useState } from "react";
+import { IoIosAdd, IoMdSend } from "react-icons/io";
+import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
+import VoiceRecorder from "./VoiceRecorder";
+import { Button } from "./ui/button";
 
 export default function MessageInput() {
   const { currentChat } = useChat();
@@ -26,27 +26,38 @@ export default function MessageInput() {
 
   const generateUploadUrl = useMutation(api.messages.generateUploadUrl);
   const [message, setMessage] = useState("");
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+
   const [recordedAudio, setRecordedAudio] = useState<Blob | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedImage && !recordedAudio && !message.trim()) return; // Prevent empty message submission
+    const hasImages = selectedImages.length > 0;
+    const hasAudio = !!recordedAudio;
+    const hasText = message.trim().length > 0;
+
+    if (!hasImages && !hasAudio && !hasText) return;
 
     try {
-      if (selectedImage) {
+      if (hasImages) {
         setIsUploading(true);
-        await sendImageMessage(selectedImage);
-        setSelectedImage(null);
+        for (const image of selectedImages) {
+          await sendImageMessage(image); // send one by one (or batch if your API supports it)
+        }
+        setSelectedImages([]);
         setIsUploading(false);
-      } else if (recordedAudio) {
+      }
+
+      if (hasAudio) {
         setIsVoiceUploading(true);
         await sendVoiceMessage(recordedAudio);
         setRecordedAudio(null);
         setIsVoiceUploading(false);
-      } else {
+      }
+
+      if (hasText) {
         await sendTextMessage(message);
         setMessage("");
       }
@@ -59,40 +70,73 @@ export default function MessageInput() {
     }
   };
 
+  // display image before sending
+
+
   return (
-    <div className="bg-gray-100 h-14 flex items-center px-2">
-      <input
-        title="file image"
-        type="file"
-        accept="image/*"
-        ref={imageInput}
-        onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
-        className="hidden"
-      />
-      <Button
-        onClick={() => imageInput.current?.click()}
-        className="text-3xl text-gray-500 mr-2"
-        disabled={isUploading}
-      >
-        <IoIosAdd />
-      </Button>
+    <>
+      {selectedImages.length > 0 && (
+        <div className="flex flex-wrap gap-4 p-2 bg-white border border-gray-300 rounded-lg mb-2 mx-2">
+          {selectedImages.map((file, index) => (
+            <div key={index} className="relative w-24 h-24">
+              <img
+                src={URL.createObjectURL(file)}
+                alt={`Preview ${index}`}
+                className="w-full h-full object-cover rounded"
+              />
+              <button
+                onClick={() => {
+                  setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+                }}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1 text-xs"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
-      {/* Handle voice recording */}
-      <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
-
-      <form onSubmit={handleSend} className="flex items-center w-full">
+      <div className="bg-gray-100 h-14 flex items-center px-2">
         <input
-          type="text"
-          placeholder="Type a message"
-          className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
-          disabled={isUploading || isVoiceUploading}
+          title="image sending"
+          type="file"
+          accept="image/*"
+          multiple
+          ref={imageInput}
+          onChange={(e) => {
+            const files = Array.from(e.target.files || []);
+            setSelectedImages((prev) => [...prev, ...files]);
+          }}
+          className="hidden"
         />
-        <Button type="submit" disabled={isUploading || isVoiceUploading}>
-          <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
+
+
+        <Button
+          onClick={() => imageInput.current?.click()}
+          className="text-3xl text-gray-500 mr-2"
+          disabled={isUploading}
+        >
+          <IoIosAdd />
         </Button>
-      </form>
-    </div>
+
+        <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
+
+        <form onSubmit={handleSend} className="flex items-center w-full">
+          <input
+            type="text"
+            placeholder="Type a message"
+            className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+            disabled={isUploading || isVoiceUploading}
+          />
+          <Button type="submit" disabled={isUploading || isVoiceUploading}>
+            <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
+          </Button>
+        </form>
+      </div>
+    </>
   );
+
 }
