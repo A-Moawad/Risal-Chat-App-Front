@@ -13,6 +13,7 @@ export default function MessageInput() {
   const { currentChat } = useChat();
   const { conversationId } = useConversation();
   const userId = currentChat?.userId ?? null;
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const {
     sendTextMessage,
@@ -27,7 +28,6 @@ export default function MessageInput() {
   const generateUploadUrl = useMutation(api.messages.generateUploadUrl);
   const [message, setMessage] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-
   const [recordedAudio, setRecordedAudio] = useState<Blob | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
 
@@ -43,10 +43,13 @@ export default function MessageInput() {
     try {
       if (hasImages) {
         setIsUploading(true);
-        for (const image of selectedImages) {
-          await sendImageMessage(image); // send one by one (or batch if your API supports it)
+        const total = selectedImages.length;
+        for (let i = 0; i < total; i++) {
+          await sendImageMessage(selectedImages[i]);
+          setUploadProgress(Math.round(((i + 1) / total) * 100));
         }
         setSelectedImages([]);
+        setUploadProgress(0);
         setIsUploading(false);
       }
 
@@ -70,13 +73,11 @@ export default function MessageInput() {
     }
   };
 
-  // display image before sending
-
-
   return (
-    <>
+    <div className="bg-gray-100 px-4 pt-4 ">
+      {/* Image Previews */}
       {selectedImages.length > 0 && (
-        <div className="flex flex-wrap gap-4 p-2 bg-white border border-gray-300 rounded-lg mb-2 mx-2">
+        <div className="flex flex-wrap gap-4 p-2 bg-white border border-gray-300 rounded-lg mb-4">
           {selectedImages.map((file, index) => (
             <div key={index} className="relative w-24 h-24">
               <img
@@ -85,10 +86,11 @@ export default function MessageInput() {
                 className="w-full h-full object-cover rounded"
               />
               <button
-                onClick={() => {
-                  setSelectedImages((prev) => prev.filter((_, i) => i !== index));
-                }}
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1 text-xs"
+                type="button"
+                onClick={() =>
+                  setSelectedImages((prev) => prev.filter((_, i) => i !== index))
+                }
+                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 transition text-white rounded-full px-1 text-xs"
               >
                 ✕
               </button>
@@ -97,46 +99,80 @@ export default function MessageInput() {
         </div>
       )}
 
-      <div className="bg-gray-100 h-14 flex items-center px-2">
-        <input
-          title="image sending"
-          type="file"
-          accept="image/*"
-          multiple
-          ref={imageInput}
-          onChange={(e) => {
-            const files = Array.from(e.target.files || []);
+      {/* Upload Progress */}
+      {isUploading && (
+        <div className="w-full px-4 mb-4">
+          <div className="h-2 bg-gray-300 rounded">
+            <div
+              className="h-2 bg-blue-500 rounded transition-all duration-300"
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
+          <p className="text-sm text-center text-gray-500 mt-1">
+            Uploading {uploadProgress}%
+          </p>
+        </div>
+      )}
+
+      {/* Input Area */}
+      <div>
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files).filter((file) =>
+              file.type.startsWith("image/")
+            );
             setSelectedImages((prev) => [...prev, ...files]);
           }}
-          className="hidden"
-        />
-
-
-        <Button
-          onClick={() => imageInput.current?.click()}
-          className="text-3xl text-gray-500 mr-2"
-          disabled={isUploading}
+          className="bg-gray-100 h-14 flex items-center px-2 rounded  mb-2"
         >
-          <IoIosAdd />
-        </Button>
-
-        <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
-
-        <form onSubmit={handleSend} className="flex items-center w-full">
+          {/* File Input */}
           <input
-            type="text"
-            placeholder="Type a message"
-            className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
-            disabled={isUploading || isVoiceUploading}
+            title="image sending"
+            type="file"
+            accept="image/*"
+            multiple
+            ref={imageInput}
+            onChange={(e) => {
+              const files = Array.from(e.target.files || []);
+              setSelectedImages((prev) => [...prev, ...files]);
+            }}
+            className="hidden"
           />
-          <Button type="submit" disabled={isUploading || isVoiceUploading}>
-            <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
-          </Button>
-        </form>
-      </div>
-    </>
-  );
 
+          {/* Image Add Button */}
+          <Button
+            onClick={() => imageInput.current?.click()}
+            className="text-3xl bg-gray-100 text-gray-500 mr-2"
+            disabled={isUploading}
+          >
+            <IoIosAdd />
+          </Button>
+
+          {/* Voice Recorder */}
+          <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
+
+          {/* Text Message Form */}
+          <form onSubmit={handleSend} className="flex items-center w-full">
+            <input
+              type="text"
+              placeholder="Type a message"
+              className="flex-grow bg-white px-3 py-1 rounded-lg outline-none"
+              onChange={(e) => setMessage(e.target.value)}
+              value={message}
+              disabled={isUploading || isVoiceUploading}
+            />
+            <Button
+              type="submit"
+              disabled={isUploading || isVoiceUploading}
+              className="bg-gray-100"
+            >
+              <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
+            </Button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }
