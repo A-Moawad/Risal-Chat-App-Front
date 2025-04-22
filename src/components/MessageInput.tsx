@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
 import VoiceRecorder from "./VoiceRecorder";
 import { Button } from "./ui/button";
+import imageCompression from "browser-image-compression";
+
 
 export default function MessageInput() {
   const { currentChat } = useChat();
@@ -45,7 +47,15 @@ export default function MessageInput() {
         setIsUploading(true);
         const total = selectedImages.length;
         for (let i = 0; i < total; i++) {
-          await sendImageMessage(selectedImages[i]);
+          // await sendImageMessage(selectedImages[i]);
+          const image = selectedImages[i];
+          const compressed = await imageCompression(image, {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+          });
+
+          await sendImageMessage(compressed);
           setUploadProgress(Math.round(((i + 1) / total) * 100));
         }
         setSelectedImages([]);
@@ -125,7 +135,7 @@ export default function MessageInput() {
             );
             setSelectedImages((prev) => [...prev, ...files]);
           }}
-          className="bg-gray-100 h-14 flex items-center px-2 rounded  mb-2"
+          className="bg-gray-100  flex items-center  px-2 rounded  mb-2"
         >
           {/* File Input */}
           <input
