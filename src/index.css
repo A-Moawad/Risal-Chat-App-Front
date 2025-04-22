@@ -40,12 +40,6 @@ main {
   margin: 0 auto;
 }
 
-/* h1 {
-  text-align: center;
-  margin-bottom: 8px;
-  font-size: 1.8em;
-  font-weight: 500;
-} */
 
 @layer base {
   :root {
