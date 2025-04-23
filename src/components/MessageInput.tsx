@@ -1,6 +1,7 @@
 import { useChat } from "@/contexts/chatContext";
 import { useConversation } from "@/hooks/UseConversation";
 import { useSendMessage } from "@/hooks/useSendMessage";
+import imageCompression from "browser-image-compression";
 import { useMutation } from "convex/react";
 import { useRef, useState } from "react";
 import { IoIosAdd, IoMdSend } from "react-icons/io";
@@ -8,7 +9,6 @@ import { toast } from "sonner";
 import { api } from "../../convex/_generated/api";
 import VoiceRecorder from "./VoiceRecorder";
 import { Button } from "./ui/button";
-import imageCompression from "browser-image-compression";
 
 
 export default function MessageInput() {
@@ -135,36 +135,42 @@ export default function MessageInput() {
             );
             setSelectedImages((prev) => [...prev, ...files]);
           }}
-          className="bg-gray-100  flex items-center  px-2 rounded  mb-2"
+          className="bg-red-100 flex  lg:gap-3  items-center p-2 rounded mb-2 "
         >
-          {/* File Input */}
-          <input
-            title="image sending"
-            type="file"
-            accept="image/*"
-            multiple
-            ref={imageInput}
-            onChange={(e) => {
-              const files = Array.from(e.target.files || []);
-              setSelectedImages((prev) => [...prev, ...files]);
-            }}
-            className="hidden"
-          />
+          {/* Image Add Section */}
+          <div className="  flex items-center gap-2">
+            {/* File Input */}
+            <input
+              title="image sending"
+              type="file"
+              accept="image/*"
+              multiple
+              ref={imageInput}
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setSelectedImages((prev) => [...prev, ...files]);
+              }}
 
-          {/* Image Add Button */}
-          <Button
-            onClick={() => imageInput.current?.click()}
-            className="text-3xl bg-gray-100 text-gray-500 mr-2"
-            disabled={isUploading}
-          >
-            <IoIosAdd />
-          </Button>
+              className="hidden"
+            />
 
-          {/* Voice Recorder */}
-          <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
+            {/* Image Add Button */}
+            <Button
+              onClick={() => imageInput.current?.click()}
+              className="text-3xl bg-gray-100 text-gray-500"
+              disabled={isUploading}
+            >
+              <IoIosAdd />
+            </Button>
+          </div>
 
-          {/* Text Message Form */}
-          <form onSubmit={handleSend} className="flex items-center w-full">
+          {/* Voice Recorder Section */}
+          <div className=" ">
+            <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
+          </div>
+
+          {/* Text Message Section */}
+          <form onSubmit={handleSend} className="flex items-center w-full bg-gray-100 rounded">
             <input
               type="text"
               placeholder="Type a message"
@@ -172,16 +178,24 @@ export default function MessageInput() {
               onChange={(e) => setMessage(e.target.value)}
               value={message}
               disabled={isUploading || isVoiceUploading}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend(e);
+                }
+              }}
             />
+
             <Button
               type="submit"
               disabled={isUploading || isVoiceUploading}
-              className="bg-gray-100"
+              className="bg-gray-100 ml-2"
             >
               <IoMdSend className="text-3xl text-gray-500 hover:text-blue-600" />
             </Button>
           </form>
         </div>
+
       </div>
     </div>
   );
