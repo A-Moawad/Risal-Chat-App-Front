@@ -12,7 +12,7 @@ export default function App() {
   }
 
   return (
-    <main className="w-full h-full px-4">
+    <main className="w-full h-full md:px-4">
       {isAuthenticated ? (
         <ChatProvider>
           <HomePage />
