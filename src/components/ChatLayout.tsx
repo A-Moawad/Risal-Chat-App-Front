@@ -7,8 +7,14 @@ import NoConversation from "@/helper/NoConversation";
 export default function ChatLayout() {
   const { currentChat } = useChat();
 
+  // Conditional classes:
+  const isSmallScreen = "sm:hidden"; // Will hide on small screens
+  const showSection = currentChat ? "flex" : "hidden sm:flex"; // Show if there's a current chat; hide otherwise on small screens
+
   return (
-    <section className="hidden h-[100vh] sm:flex sm:flex-col sm:w-[50%] lg:w-[70%] bg-yellow- sm:border sm:border-l-gray-200 rounded-md sm:rounded-l-none">
+    <section
+      className={`w-full h-[100vh] flex-col bg-yellow- sm:border sm:border-l-gray-200 rounded-md sm:rounded-l-none ${showSection}`}
+    >
       {currentChat ? (
         <>
           <ChatHeader />

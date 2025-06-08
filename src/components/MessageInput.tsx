@@ -84,7 +84,7 @@ export default function MessageInput() {
   };
 
   return (
-    <div className="bg-gray-100 px-4 pt-4 ">
+    <div className="relative bg-gray-100 px-4 py-2 ">
       {/* Image Previews */}
       {selectedImages.length > 0 && (
         <div className="flex flex-wrap gap-4 p-2 bg-white border border-gray-300 rounded-lg mb-4">
@@ -125,7 +125,7 @@ export default function MessageInput() {
       )}
 
       {/* Input Area */}
-      <div>
+      <div className="">
         <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -135,7 +135,7 @@ export default function MessageInput() {
             );
             setSelectedImages((prev) => [...prev, ...files]);
           }}
-          className="bg-red-100 flex  lg:gap-3  items-center p-2 rounded mb-2 "
+          className="bg-gray-100 flex  lg:gap-3  items-center  rounded mb-2 "
         >
           {/* Image Add Section */}
           <div className="  flex items-center gap-2">
@@ -165,7 +165,7 @@ export default function MessageInput() {
           </div>
 
           {/* Voice Recorder Section */}
-          <div className=" ">
+          <div className="relative ">
             <VoiceRecorder onVoiceRecorded={setRecordedAudio} />
           </div>
 
