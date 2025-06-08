@@ -1,6 +1,6 @@
 import { useVoiceRecorder } from "@/hooks/useVoiceRecorder";
+import { useEffect, useRef, useState } from "react";
 import { IoMdMic, IoMdMicOff } from "react-icons/io";
-import { useState, useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 
 
@@ -49,12 +49,14 @@ export default function VoiceRecorder({
   };
 
   return (
-    <div className="relative">
+    <div className="">
       {/* Recording UI displayed above the input section */}
       {isRecording && (
-        <div className="absolute top-[-80px] left-[50px] bg-blue-500 text-white text-center p-2 rounded">
+        <div className="absolute top-[-40px] left-0 transform -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white text-center p-2 rounded">
           <span>Recording... {recordingTime}s</span>
         </div>
+
+
       )}
 
       {/* Display recorded audio before sending */}

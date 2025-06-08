@@ -49,7 +49,7 @@ function AddFriendForm() {
   };
 
   return (
-    <section className="bg-white w-full sm:w-[50%] lg:w-[40%] h-[100vh] px-6 py-8 flex flex-col gap-6 shadow-lg rounded-md sm:rounded-r-none">
+    <section className="bg-white w-full  h-[100vh] px-6 py-8 flex flex-col gap-6 shadow-lg rounded-md sm:rounded-r-none">
       {/* Header */}
       <div className="flex items-center gap-4">
         <GoArrowLeft

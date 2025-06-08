@@ -1,8 +1,8 @@
 import { useUser } from "@clerk/clerk-react";
-import { api } from "../../convex/_generated/api";
 import { Id } from "convex/_generated/dataModel";
 import { useQuery } from "convex/react";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
+import { api } from "../../convex/_generated/api";
 
 type Chat = {
   userId: Id<"users">;
@@ -14,6 +14,10 @@ type ChatContextType = {
   setAddFriendButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
   userProfileButtonClicked: boolean;
   setUserProfileButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  // left arrow of current chat
+  currentChatButtonClicked: boolean;
+  setCurrentChatButtonClicked: React.Dispatch<React.SetStateAction<boolean>>;
+  // current chat
   currentChat: Chat | null;
   setCurrentChat: React.Dispatch<React.SetStateAction<Chat | null>>;
   isArrowLeftClicked: boolean;
@@ -33,6 +37,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [addFriendButtonClicked, setAddFriendButtonClicked] = useState(false);
   const [userProfileButtonClicked, setUserProfileButtonClicked] =
     useState(false);
+  const [currentChatButtonClicked, setCurrentChatButtonClicked] =
+    useState(false);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [isArrowLeftClicked, setIsArrowLeftClicked] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -51,6 +57,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         setAddFriendButtonClicked,
         userProfileButtonClicked,
         setUserProfileButtonClicked,
+        currentChatButtonClicked,
+        setCurrentChatButtonClicked,
         isArrowLeftClicked,
         setIsArrowLeftClicked,
         currentChat,
